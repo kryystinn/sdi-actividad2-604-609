@@ -26,12 +26,22 @@
         <div class="collapse navbar-collapse" id="myNavbar">
             <ul class="nav navbar-nav">
                 <li id="mInicio" class="active"><a href="/tienda">Inicio</a></li>
-                <li id="mMisOfertas"><a href="/ofertas">Mis ofertas</a></li>
+
+                <li id="offers-menu" class="dropdown">
+                    <a id="btnOffersManagement" class="dropdown-toggle" data-toggle="dropdown" href="#" style="color: white;">
+                        <span>Gestionar ofertas</span>
+                        <span class="caret"></span>
+                    </a>
+                    <ul id="offersDropdownMenu" class="dropdown-menu">
+                        <li><a id="addOffer" href="/agregarOferta">Añadir oferta</a></li>
+                        <li><a id="offersList" href="/listadoOfertas">Ver mis ofertas</a></li>
+                    </ul>
+                </li>
+
                 <li id="mCompras"><a href="/compras">Mis compras</a></li>
             </ul>
+
             <ul class="nav navbar-nav navbar-right">
-
-
                 <li><a href="/registrarse"><span class="glyphicon glyphicon-user"></span> Regístrate</a></li>
                 <li><a href="/identificarse"><span class="glyphicon glyphicon-log-in"></span> Identifícate</a></li>
                 <li><a href="/desconectarse"><span class="glyphicon glyphicon-log-out"></span> Desconectarse</a></li>
