@@ -37,7 +37,7 @@ require("./routes/rofertas.js")(app, swig, gestorBD); // (app, param1, param2, e
 
 
 app.get('/', function (req, res) {
-    res.redirect('/tienda');
+    res.redirect('/identificarse');
 });
 
 // lanzar el servidor

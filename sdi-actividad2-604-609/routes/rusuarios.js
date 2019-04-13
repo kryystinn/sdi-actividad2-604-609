@@ -28,7 +28,9 @@ module.exports = function (app, swig, gestorBD) {
                         name: req.body.nombre,
                         surname: req.body.apellidos,
                         password: pass,
-                        passwordConfirm: passConf
+                        passwordConfirm: passConf,
+                        rol : "user",
+                        balance : 100
                     };
 
                     gestorBD.insertarUsuario(usuario, function (id) {
@@ -59,6 +61,7 @@ module.exports = function (app, swig, gestorBD) {
         app.post("/identificarse", function (req, res) {
             var pass = app.get("crypto").createHmac('sha256', app.get('clave'))
                 .update(req.body.password).digest('hex');
+
             var criterio = {
                 email: req.body.email,
                 password: pass
@@ -72,20 +75,27 @@ module.exports = function (app, swig, gestorBD) {
                         "?mensaje=Email o password incorrecto" +
                         "&tipoMensaje=alert-danger ");
 
-                } else if (criterio.email == admin) {
-                    req.session.usuario = usuarios[0].email;
-                    var respuesta = swig.renderFile('./sdi-actividad2-604-609/views/vistaAdmin.html', {});
-                    res.send(respuesta);
-                } else {
+                } else if (criterio.email != admin) {
                     req.session.usuario = usuarios[0].email;
                     res.redirect("/tienda");
+
+                } else {
+                    req.session.usuario = usuarios[0].email;
+                    var c ={};
+                    gestorBD.obtenerUsuarios(c, function (usuarios) {
+                        var respuesta = swig.renderFile('./sdi-actividad2-604-609/views/vistaAdmin.html', {
+                            usuarios : usuarios
+                        });
+                        res.send(respuesta);
+                    })
+
                 }
             });
         });
 
         app.get('/desconectarse', function (req, res) {
             req.session.usuario = null;
-            res.send("Usuario desconectado");
+            res.redirect("/identificarse");
         });
 
     };
