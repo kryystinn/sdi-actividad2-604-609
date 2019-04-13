@@ -16,6 +16,14 @@ var crypto = require('crypto');
 var gestorBD = require("./modules/gestorBD.js");
 gestorBD.init(app,mongo);
 
+var expressSession = require('express-session');
+app.use(expressSession({
+    secret: 'abcdefg',
+    resave: true,
+    saveUninitialized: true
+}));
+
+
 // Variables
 app.set('port', 8081);
 app.set('db','mongodb://admin:604609@mywallapop-shard-00-00-tprww.mongodb.net:27017,mywallapop-shard-00-01-tprww.mongodb.net:27017,mywallapop-shard-00-02-tprww.mongodb.net:27017/test?ssl=true&replicaSet=mywallapop-shard-0&authSource=admin&retryWrites=true');
