@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block titulo %} MyWallapop {% endblock %}
+{% block contenido_principal %}
+
+
+<h2>Usuarios:</h2>
+
+<div class="table-responsive">
+    <table class="table table-hover" id="tableUsers">
+
+        {% for usuario in usuarios %}
+
+        <div class="col-xs-6 col-sm-6 col-md-4 col-lg-3">
+            <tr>
+                <td style="text-align: center"><input type="checkbox"></td>
+                <td style="text-align: left"> {{ usuario.email }}</td>
+            </tr>
+        </div>
+
+        {% endfor %}
+    </table>
+
+    <div>
+        <button type="submit" id="deleteButton" class="btn btn-primary" style="text-align: left">Eliminar</button>
+    </div>
+
+</div>
+
+
+{% endblock %}
