@@ -1,6 +1,5 @@
 module.exports = function (app, swig, gestorBD) {
 
-
     // Registrarse
     app.get('/registrarse', function (req, res) {
         var respuesta = swig.renderFile('views/registro.html', {});
@@ -30,7 +29,7 @@ module.exports = function (app, swig, gestorBD) {
                         surname: req.body.apellidos,
                         password: pass,
                         passwordConfirm: passConf,
-                        rol : "user",
+                        role : "user",
                         balance : 100
                     };
 
@@ -55,56 +54,73 @@ module.exports = function (app, swig, gestorBD) {
         });
     });
 
-
-        // Identificarse
-        app.get("/identificarse", function (req, res) {
-            var respuesta = swig.renderFile('views/identificacion.html', {});
-            res.send(respuesta);
-        });
+    app.get("/identificarse", function (req, res) {
+        var respuesta = swig.renderFile('views/identificacion.html', {});
+        res.send(respuesta);
+    });
 
         // Identificación del usuario
-        app.post("/identificarse", function (req, res) {
-            var pass = app.get("crypto").createHmac('sha256', app.get('clave'))
-                .update(req.body.password).digest('hex');
+    app.post("/identificarse", function (req, res) {
+        var pass = app.get("crypto").createHmac('sha256', app.get('clave'))
+            .update(req.body.password).digest('hex');
 
-            var criterio = {
-                email: req.body.email,
-                password: pass
-            };
-            var admin = "admin@email.com";
+        var criterio = {
+            email: req.body.email,
+            password: pass
+        };
+        var admin = "admin@email.com";
 
-            // Entramos en sesión
-            gestorBD.obtenerUsuarios(criterio, function (usuarios) {
-                // Si no existe el usuario en la BD:
-                if (usuarios == null || usuarios.length == 0) {
-                    req.session.usuario = null;
-                    res.redirect("/identificarse" +
-                        "?mensaje=Email o password incorrecto" +
-                        "&tipoMensaje=alert-danger ");
+        // Entramos en sesión
+        gestorBD.obtenerUsuarios(criterio, function (usuarios) {
+            // Si no existe el usuario en la BD:
+            if (usuarios == null || usuarios.length == 0) {
+                req.session.usuario = null;
+                res.redirect("/identificarse" +
+                    "?mensaje=Email o password incorrecto" +
+                    "&tipoMensaje=alert-danger ");
+            }
+            // Si el usuario que se identifica NO es admin (se redirige a vista normal):
+            else if (criterio.email != admin) {
+                req.session.usuario = usuarios[0].email;
+                res.redirect("/tienda");
+            }
+            // Si el usuario que se identifica SÍ es admin (se redirige a vista de admin):
+            else {
+                req.session.usuario = usuarios[0].email;
+                var c = {};
+                gestorBD.obtenerUsuarios(c, function (usuarios) {
+                    var respuesta = swig.renderFile('views/vistaAdmin.html', {
+                        usuarios : usuarios
+                    });
+                    res.send(respuesta);
+                })
+            }
+        });
+    });
 
-                // Si el usuario que se identifica NO es admin (se redirige a vista normal):
-                } else if (criterio.email != admin) {
-                    req.session.usuario = usuarios[0].email;
-                    res.redirect("/tienda");
+    app.post("/usuario/eliminar", function(req, res){
+        var ids = req.body.checkboxes;
 
-                 // Si el usuario que se identifica SÍ es admin (se redirige a vista de admin):
-                } else {
-                    req.session.usuario = usuarios[0].email;
-                    var c ={};
-                    gestorBD.obtenerUsuarios(c, function (usuarios) {
+        if (ids != null) {
+            ids.forEach(function(value){
+                console.log(value);
+                var criterio = {"_id": gestorBD.mongo.ObjectID(value)};
+                gestorBD.eliminarUsuario(criterio, function (usuarios) {
+                    if (usuarios == null) {
+                        res.send(respuesta);
+                    } else {
                         var respuesta = swig.renderFile('views/vistaAdmin.html', {
-                            usuarios : usuarios
+                            usuarios: usuarios
                         });
                         res.send(respuesta);
-                    })
-
-                }
+                    }
+                })
             });
-        });
+        }
+    });
 
-        app.get('/desconectarse', function (req, res) {
-            req.session.usuario = null;
-            res.redirect("/identificarse");
-        });
-
-    };
+    app.get('/desconectarse', function (req, res) {
+        req.session.usuario = null;
+        res.redirect("/identificarse");
+    });
+};

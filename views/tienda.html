@@ -10,10 +10,10 @@
                 <input type="text" class="search-query form-control"
                        placeholder="Nombre de la oferta" name="busqueda"/>
                 <span class="input-group-btn">
-<button class="btn" type="submit">
-<span class="glyphicon glyphicon-search"></span>
-</button>
-</span>
+                    <button class="btn" type="submit">
+                    <span class="glyphicon glyphicon-search"></span>
+                    </button>
+                </span>
             </div>
         </form>
     </div>
@@ -21,22 +21,22 @@
 
 <h2>Ofertas</h2>
 
-    <!-- http://librosweb.es/libro/bootstrap_3/capitulo_2/tipos_de_rejillas.html -->
-    <!-- Inicio del Bloque oferta -->
+<!-- http://librosweb.es/libro/bootstrap_3/capitulo_2/tipos_de_rejillas.html -->
+<!-- Inicio del Bloque oferta -->
 
 
-    <!-- Fin del Bloque oferta -->
+<!-- Fin del Bloque oferta -->
 
 <!-- Paginación mostrar la actual y 2 anteriores y dos siguientes -->
 <div class="row text-center">
     <ul class="pagination">
         {% for pagina in paginas %}
         <li class="page-item" id="pi-{{ pagina}}">
-            <a class="page-link" href="/tienda?pg={{ pagina }}" >{{ pagina }}</a>
+            <a class="page-link" href="/tienda?pg={{ pagina }}">{{ pagina }}</a>
         </li>
         {% endfor %}
         <script>
-            $( "#pi-{{ actual}}" ).addClass("active");
+            $("#pi-{{ actual}}").addClass("active");
         </script>
     </ul>
 </div>
