@@ -87,13 +87,7 @@ module.exports = function (app, swig, gestorBD) {
             // Si el usuario que se identifica SÍ es admin (se redirige a vista de admin):
             else {
                 req.session.usuario = usuarios[0].email;
-                var c = {};
-                gestorBD.obtenerUsuarios(c, function (usuarios) {
-                    var respuesta = swig.renderFile('views/vistaAdmin.html', {
-                        usuarios : usuarios
-                    });
-                    res.send(respuesta);
-                })
+                res.redirect("/usuarios");
             }
         });
     });
@@ -102,21 +96,42 @@ module.exports = function (app, swig, gestorBD) {
         var ids = req.body.checkboxes;
 
         if (ids != null) {
-            ids.forEach(function(value){
-                console.log(value);
-                var criterio = {"_id": gestorBD.mongo.ObjectID(value)};
+            if ( typeof ids === 'string' ){ // 1 solo elemento seleccionado -> es un string
+                var criterio = {"_id": gestorBD.mongo.ObjectID(ids)};
                 gestorBD.eliminarUsuario(criterio, function (usuarios) {
                     if (usuarios == null) {
                         res.send(respuesta);
-                    } else {
-                        var respuesta = swig.renderFile('views/vistaAdmin.html', {
-                            usuarios: usuarios
-                        });
-                        res.send(respuesta);
                     }
-                })
-            });
+                });
+            } else { // varios elementos -> es array
+                for (i = 0; i < ids.length; i++){
+                    var criterio = {"_id": gestorBD.mongo.ObjectID(ids[i])};
+                    gestorBD.eliminarUsuario(criterio, function (usuarios) {
+                        if (usuarios == null) {
+                            res.send(respuesta);
+                        }
+                    });
+                }
+            }
+            //Actualizamos
+            res.redirect("/usuarios?mensaje=Usuarios eliminados correctamente");
         }
+        else
+            res.redirect("/usuarios" + "?mensaje=No hay ningún usuario seleccionado" +
+                "&tipoMensaje=alert-danger");
+    });
+
+    app.get('/usuarios', function(req, res) {
+        gestorBD.obtenerUsuarios({}, function (usuarios) {
+            if (usuarios==null)
+                res.send("Error al listar");
+            else {
+                var respuesta = swig.renderFile('views/vistaAdmin.html', {
+                    usuarios: usuarios
+                });
+                res.send(respuesta);
+            }
+        });
     });
 
     app.get('/desconectarse', function (req, res) {
