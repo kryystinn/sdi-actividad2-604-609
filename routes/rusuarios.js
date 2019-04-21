@@ -99,32 +99,47 @@ module.exports = function (app, swig, gestorBD) {
             if ( typeof ids === 'string' ){ // 1 solo elemento seleccionado -> es un string
                 var criterio = {"_id": gestorBD.mongo.ObjectID(ids)};
                 gestorBD.eliminarUsuario(criterio, function (usuarios) {
-                    if (usuarios == null) {
-                        res.send(respuesta);
-                    }
+                    if (usuarios == null)
+                        res.send("Error al eliminar un usuario");
+                    else
+                        borrarOfertasUsuario(usuario); //borramos tambien sus ofertas
                 });
             } else { // varios elementos -> es array
                 for (i = 0; i < ids.length; i++){
                     var criterio = {"_id": gestorBD.mongo.ObjectID(ids[i])};
+                    var usuario;
                     gestorBD.eliminarUsuario(criterio, function (usuarios) {
-                        if (usuarios == null) {
-                            res.send(respuesta);
-                        }
+                        if (usuarios == null)
+                            res.send("Error al eliminar varios usuarios");
+                        else
+                            borrarOfertasUsuario(usuario); //borramos tambien sus ofertas
                     });
                 }
             }
-            //Actualizamos
-            res.redirect("/usuarios?mensaje=Usuarios eliminados correctamente");
+            //Actualizamos y mostramos un mensaje
+            res.redirect("/usuarios?mensaje=Usuario(s) eliminado(s) correctamente");
         }
-        else
-            res.redirect("/usuarios" + "?mensaje=No hay ningún usuario seleccionado" +
+        else //Si pulsa el boton sin seleccionar nada se lo indicamos
+            res.redirect("/usuarios?mensaje=No hay ningún usuario seleccionado" +
                 "&tipoMensaje=alert-danger");
     });
+
+    function borrarOfertasUsuario(usuario){
+        var criterio= {
+            email: usuario.email
+        };
+
+        gestorBD.eliminarOferta(criterio, function(ofertas) {
+            if (ofertas==null)
+                res.send("Error al eliminar ofertas de un usuario");
+        });
+
+    }
 
     app.get('/usuarios', function(req, res) {
         gestorBD.obtenerUsuarios({}, function (usuarios) {
             if (usuarios==null)
-                res.send("Error al listar");
+                res.send("Error al listar usuarios");
             else {
                 var respuesta = swig.renderFile('views/vistaAdmin.html', {
                     usuarios: usuarios

@@ -1,5 +1,4 @@
 module.exports = function (app, swig, gestorBD) {
-
     app.get("/tienda", function (req, res) {
         var criterio = {};
         if (req.query.busqueda != null) {
@@ -13,7 +12,7 @@ module.exports = function (app, swig, gestorBD) {
 
         gestorBD.obtenerOfertasPg(criterio, pg, function (ofertas, total) {
             if (ofertas == null) {
-                res.send("Error al listar ");
+                res.send("Error al listar");
             } else {
                 var ultimaPg = total / 4;
                 if (total % 4 > 0) { // Sobran decimales
@@ -50,11 +49,11 @@ module.exports = function (app, swig, gestorBD) {
             return;
         } else {
             var oferta = {
-                titulo: req.body.titulo,
-                detalle: req.body.detalle,
-                fecha: req.body.fecha,
-                precio: req.body.precio,
-                vendedor: req.session.usuario
+                title: req.body.titulo,
+                details: req.body.detalle,
+                date: req.body.fecha,
+                price: req.body.precio,
+                seller: req.session.usuario
             };
             // Conectarse
             gestorBD.insertarOferta(oferta, function (id) {
