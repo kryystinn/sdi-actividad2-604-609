@@ -13,8 +13,8 @@ module.exports = function (app, swig, gestorBD) {
             if (ofertas == null)
                 res.send("Error al listar");
             else {
-                var ultimaPg = total / 4;
-                if (total % 4 > 0)
+                var ultimaPg = total / 5;
+                if (total % 5 > 0)
                     ultimaPg = ultimaPg + 1;
 
                 var paginas = [];
@@ -31,6 +31,20 @@ module.exports = function (app, swig, gestorBD) {
             }
         });
 
+    });
+
+    app.get('/misOfertas', function (req, res) {
+       var criterio = { seller: req.session.usuario };
+       gestorBD.obtenerOfertas(criterio, function(ofertas){
+           if (ofertas == null)
+               res.send("Error al listar");
+           else {
+               var respuesta = swig.renderFile('views/ofertasUsuario.html', {
+                   ofertas: ofertas
+               });
+               res.send(respuesta);
+           }
+       });
     });
 
     // Añadir una oferta

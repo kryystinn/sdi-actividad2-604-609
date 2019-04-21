@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block titulo %} Ofertas del Usuario {% endblock %}
+{% block contenido_principal %}
+
+<h1 style="text-align: left;">Mis Ofertas</h1>
+{% if ofertas.length == 0 %}
+    <p style="margin-top: 25px;">Aún no has añadido ofertas a MyWallapop.</p>
+{% else %}
+    <div class="table-responsive" style="margin-top: 30px">
+        <table class="table table-hover" id="tableUsers">
+            <thead>
+            <tr>
+                <th style="text-align: center">Título</th>
+                <th style="text-align: center">Detalles</th>
+                <th style="text-align: center">Precio</th>
+            </tr>
+            </thead>
+            {% for oferta in ofertas %}
+            <div class="col-xs-6 col-sm-6 col-md-4 col-lg-3">
+                <tr>
+                    <td style="text-align: center"> {{ oferta.title }}</td>
+                    <td style="text-align: center"> {{ oferta.details }}</td>
+                    <td style="text-align: center"> {{ oferta.price }}</td>
+                </tr>
+            </div>
+            {% endfor %}
+        </table>
+    </div>
+{% endif %}
+{% endblock %}

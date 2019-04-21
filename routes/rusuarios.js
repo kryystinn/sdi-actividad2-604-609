@@ -98,48 +98,39 @@ module.exports = function (app, swig, gestorBD) {
         if (ids != null) {
             if ( typeof ids === 'string' ){ // 1 solo elemento seleccionado -> es un string
                 var criterio = {"_id": gestorBD.mongo.ObjectID(ids)};
-                borrarOfertasUsuario(res, criterio);
                 borrarUsuarios(res, criterio);
             }
             else { // varios elementos -> es array
                 for (i = 0; i < ids.length; i++) {
                     var criterio = {"_id": gestorBD.mongo.ObjectID(ids[i])};
-                    borrarOfertasUsuario(res, criterio);
                     borrarUsuarios(res, criterio);
                 }
             }
             //Actualizamos y mostramos un mensaje
-            res.redirect("/usuarios");
+            res.redirect("/usuarios?mensaje=Usuario(s) eliminado(s) correctamente")
         }
         else //Si pulsa el boton sin seleccionar nada se lo indicamos
-            res.redirect("/usuarios");
+            res.redirect("/usuarios?mensaje=No hay ningún usuario seleccionado" +
+                "&tipoMensaje=alert-danger");
     });
 
     /**
-     * Elimina a un las ofertas de un usuario
-     * @param res
-     * @param criterio
-     */
-    function borrarOfertasUsuario(res, criterio) {
-        gestorBD.obtenerUsuarios(criterio, function (usuarios) {
-            if (usuarios == null || usuarios.length == 0)
-                res.send("No existe el usuario");
-            else {
-                var cBorrar = { seller: usuarios[0].email };
-                gestorBD.eliminarOferta(cBorrar, function (ofertas) {
-                    if (ofertas == null)
-                        res.send("Error al eliminar ofertas de un usuario");
-                });
-            }
-        });
-    }
-
-    /**
-     * Elimina un usuario del sistema
+     * Elimina un usuario del sistema --> 1) Elimina las ofertas del usuario 2) Elimina al usuario
      * @param res
      * @param criterio
      */
     function borrarUsuarios(res, criterio) {
+        var cBorrar = {};
+        gestorBD.obtenerUsuarios(criterio, function (usuarios) {
+            if (usuarios == null || usuarios.length == 0)
+                res.send("No existe el usuario");
+            else
+                cBorrar = { seller: usuarios[0].email };
+        });
+        gestorBD.eliminarOferta(cBorrar, function (ofertas) {
+            if (ofertas == null)
+                res.send("Error al eliminar ofertas de un usuario");
+        });
         gestorBD.eliminarUsuario(criterio, function (usuarios) {
             if (usuarios == null)
                 res.send("Error al eliminar usuario(s)");
