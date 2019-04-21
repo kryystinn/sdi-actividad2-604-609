@@ -98,29 +98,29 @@ module.exports = function (app, swig, gestorBD) {
         if (ids != null) {
             if ( typeof ids === 'string' ){ // 1 solo elemento seleccionado -> es un string
                 var criterio = {"_id": gestorBD.mongo.ObjectID(ids)};
+                borrarOfertasUsuario(res, criterio);
                 borrarUsuarios(res, criterio);
             }
             else { // varios elementos -> es array
                 for (i = 0; i < ids.length; i++) {
                     var criterio = {"_id": gestorBD.mongo.ObjectID(ids[i])};
+                    borrarOfertasUsuario(res, criterio);
                     borrarUsuarios(res, criterio);
                 }
             }
             //Actualizamos y mostramos un mensaje
-            res.redirect("/usuarios?mensaje=Usuario(s) eliminado(s) correctamente");
+            res.redirect("/usuarios");
         }
         else //Si pulsa el boton sin seleccionar nada se lo indicamos
-            res.redirect("/usuarios?mensaje=No hay ningún usuario seleccionado" +
-                "&tipoMensaje=alert-danger");
+            res.redirect("/usuarios");
     });
 
     /**
-     * Elimina a un usuario del sistema junto con su informacion
+     * Elimina a un las ofertas de un usuario
      * @param res
      * @param criterio
      */
-    function borrarUsuarios(res, criterio) {
-        // PRIMERO SUS OFERTAS
+    function borrarOfertasUsuario(res, criterio) {
         gestorBD.obtenerUsuarios(criterio, function (usuarios) {
             if (usuarios == null || usuarios.length == 0)
                 res.send("No existe el usuario");
@@ -132,8 +132,14 @@ module.exports = function (app, swig, gestorBD) {
                 });
             }
         });
+    }
 
-        // DESPUES EL USUARIO DEL SISTEMA
+    /**
+     * Elimina un usuario del sistema
+     * @param res
+     * @param criterio
+     */
+    function borrarUsuarios(res, criterio) {
         gestorBD.eliminarUsuario(criterio, function (usuarios) {
             if (usuarios == null)
                 res.send("Error al eliminar usuario(s)");

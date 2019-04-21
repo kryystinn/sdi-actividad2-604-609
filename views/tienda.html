@@ -3,24 +3,25 @@
 {% block contenido_principal %}
 
 <h1 style="text-align: left;">Ofertas Disponibles</h1>
-{% if ofertas.length == 0 %}
-    <p>No hay ofertas disponibles en este momento.</p>
-{% else %}
-    <p style="margin-top: 25px;">
-        <div id="custom-search-input ">
-            <form method="get" action="/tienda">
-                <div class="input-group col-xs-8 col-sm-6 col-md-4 col-lg-5">
-                    <input type="text" class="search-query form-control"
-                           placeholder="Nombre de la oferta" name="busqueda"/>
-                    <span class="input-group-btn">
-                        <button class="btn" type="submit">
+<p style="margin-top: 25px;">
+    <div id="custom-search-input ">
+        <form method="get" action="/tienda">
+            <div class="input-group col-xs-8 col-sm-6 col-md-4 col-lg-5">
+                <input type="text" class="search-query form-control"
+                       placeholder="Nombre de la oferta" name="busqueda"/>
+                <span class="input-group-btn">
+                    <button class="btn" type="submit">
                         <span class="glyphicon glyphicon-search"></span>
-                        </button>
-                    </span>
-                </div>
-            </form>
-        </div>
-    </p>
+                    </button>
+                </span>
+            </div>
+        </form>
+    </div>
+</p>
+
+{% if ofertas.length == 0 %}
+    <p style="margin-top: 25px;">No hay ofertas disponibles.</p>
+{% else %}
     <div class="table-responsive" style="margin-top: 30px">
         <table class="table table-hover" id="tableUsers">
             {% for oferta in ofertas %}
@@ -31,6 +32,9 @@
                         <td style="text-align: center"> {{ oferta.date }}</td>
                         <td style="text-align: center"> {{ oferta.price }}</td>
                         <td style="text-align: center"> {{ oferta.seller }}</td>
+                        <td>
+                            <button type="button" class="btn btn-info" style="text-align: center">Comprar</button>
+                        </td>
                     </tr>
                 </div>
             {% endfor %}

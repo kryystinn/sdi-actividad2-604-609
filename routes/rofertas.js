@@ -1,8 +1,9 @@
 module.exports = function (app, swig, gestorBD) {
     app.get("/tienda", function (req, res) {
         var criterio = {};
+
         if (req.query.busqueda != null)
-            criterio = {"nombre": {$regex: ".*" + req.query.busqueda + ".*", $options: 'i'}};
+            criterio = {"title": {$regex: ".*" + req.query.busqueda + ".*", $options: 'i'}};
 
         var pg = parseInt(req.query.pg);
         if (req.query.pg == null)
