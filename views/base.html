@@ -26,7 +26,7 @@
         </div>
         <div class="collapse navbar-collapse" id="myNavbar">
             <ul class="nav navbar-nav">
-                <li id="mInicio" class="active"><a href="/tienda">Inicio</a></li>
+                <li id="mInicio"><a href="/tienda">Inicio</a></li>
 
                 <li id="offers-menu" class="dropdown">
                     <a id="btnOffersManagement" class="dropdown-toggle" data-toggle="dropdown" href="#">
@@ -34,7 +34,7 @@
                         <span class="caret"></span>
                     </a>
                     <ul id="offersDropdownMenu" class="dropdown-menu">
-                        <li><a id="addOffer" href="/agregarOferta">Añadir oferta</a></li>
+                        <li><a id="addOffer" href="/nuevaOferta">Añadir oferta</a></li>
                         <li><a id="offersList" href="/listadoOfertas">Ver mis ofertas</a></li>
                     </ul>
                 </li>
@@ -72,6 +72,19 @@
                 decodeURIComponent(results[1].replace(/\+/g, ' '));
         }
     </script>
+
+    <style>
+        h1 {
+            font-family: "Calibri Light";
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+        label {
+            font-family: "Calibri Light";
+            font-size: 16px;
+            color: #000000;
+        }
+    </style>
 
     {% block contenido_principal %}
     <!-- Posible contenido por defecto -->

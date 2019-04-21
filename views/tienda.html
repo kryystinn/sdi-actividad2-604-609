@@ -1,44 +1,53 @@
 {% extends "base.html" %}
 {% block titulo %} MyWallapop {% endblock %}
 {% block contenido_principal %}
-<!-- Búsqueda -->
-<div class="row">
-    <div id="custom-search-input ">
-        <form method="get" action="/tienda">
-            <div
-                    class="input-group col-xs-8 col-sm-6 col-md-4 col-lg-5 pull-right">
-                <input type="text" class="search-query form-control"
-                       placeholder="Nombre de la oferta" name="busqueda"/>
-                <span class="input-group-btn">
-                    <button class="btn" type="submit">
-                    <span class="glyphicon glyphicon-search"></span>
-                    </button>
-                </span>
-            </div>
-        </form>
+
+<h1 style="text-align: left;">Ofertas Disponibles</h1>
+{% if ofertas.length == 0 %}
+    <p>No hay ofertas disponibles en este momento.</p>
+{% else %}
+    <p style="margin-top: 25px;">
+        <div id="custom-search-input ">
+            <form method="get" action="/tienda">
+                <div class="input-group col-xs-8 col-sm-6 col-md-4 col-lg-5">
+                    <input type="text" class="search-query form-control"
+                           placeholder="Nombre de la oferta" name="busqueda"/>
+                    <span class="input-group-btn">
+                        <button class="btn" type="submit">
+                        <span class="glyphicon glyphicon-search"></span>
+                        </button>
+                    </span>
+                </div>
+            </form>
+        </div>
+    </p>
+    <div class="table-responsive" style="margin-top: 30px">
+        <table class="table table-hover" id="tableUsers">
+            {% for oferta in ofertas %}
+                <div class="col-xs-6 col-sm-6 col-md-4 col-lg-3">
+                    <tr>
+                        <td style="text-align: center"> {{ oferta.title }}</td>
+                        <td style="text-align: center"> {{ oferta.details }}</td>
+                        <td style="text-align: center"> {{ oferta.date }}</td>
+                        <td style="text-align: center"> {{ oferta.price }}</td>
+                        <td style="text-align: center"> {{ oferta.seller }}</td>
+                    </tr>
+                </div>
+            {% endfor %}
+        </table>
     </div>
-</div>
-
-<h2>Ofertas</h2>
-
-<!-- http://librosweb.es/libro/bootstrap_3/capitulo_2/tipos_de_rejillas.html -->
-<!-- Inicio del Bloque oferta -->
-
-
-<!-- Fin del Bloque oferta -->
-
-<!-- Paginación mostrar la actual y 2 anteriores y dos siguientes -->
-<div class="row text-center">
-    <ul class="pagination">
-        {% for pagina in paginas %}
-        <li class="page-item" id="pi-{{ pagina}}">
-            <a class="page-link" href="/tienda?pg={{ pagina }}">{{ pagina }}</a>
-        </li>
-        {% endfor %}
-        <script>
-            $("#pi-{{ actual}}").addClass("active");
-        </script>
-    </ul>
-</div>
-
+    <!-- Paginación mostrar la actual y 2 anteriores y dos siguientes -->
+    <div class="row text-center">
+        <ul class="pagination">
+            {% for pagina in paginas %}
+            <li class="page-item" id="pi-{{ pagina}}">
+                <a class="page-link" href="/tienda?pg={{ pagina }}">{{ pagina }}</a>
+            </li>
+            {% endfor %}
+            <script>
+                $("#pi-{{ actual}}").addClass("active");
+            </script>
+        </ul>
+    </div>
+{% endif %}
 {% endblock %}

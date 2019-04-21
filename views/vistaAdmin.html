@@ -2,7 +2,19 @@
 {% block titulo %} MyWallapop {% endblock %}
 {% block contenido_principal %}
 
-<h2>Usuarios:</h2>
+<style>
+    button {
+        border-radius: 25px;
+        background-color: lavenderblush;
+        width: 150px;
+        height: 40px;
+        font-family: "Calibri";
+        font-weight: bold;
+        font-size: 16px;
+    }
+</style>
+
+<h1>Usuarios</h1>
 <form action="/usuario/eliminar" method="post">
     {% if usuarios.length == 1 %}
         <p>No hay usuarios en el sistema.</p>
@@ -21,7 +33,7 @@
                 {% endfor %}
             </table>
             <div>
-                <button type="submit" id="deleteButton" class="btn btn-primary" style="text-align: left">Eliminar</button>
+                <button type="submit" id="deleteButton">Eliminar</button>
             </div>
         </div>
     {% endif %}

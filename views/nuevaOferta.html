@@ -1,18 +1,8 @@
 {% extends "base.html" %}
-{% block titulo %} Agregar oferta {% endblock %}
+{% block titulo %} Nueva oferta {% endblock %}
 {% block contenido_principal %}
 
 <style>
-    h2 {
-        text-align: center;
-        font-family: "Calibri Light";
-        font-weight: bold;
-    }
-    label {
-        font-family: "Calibri Light";
-        font-size: 16px;
-        color: #000000;
-    }
     button {
         border-radius: 25px;
         background-color: lavenderblush;
@@ -24,7 +14,7 @@
     }
 </style>
 
-<h2>Agregar oferta</h2>
+<h1 style="text-align: center;">Nueva oferta</h1>
 <form class="form-horizontal" method="post" action="/oferta">
 
     <div class="form-group">
@@ -44,7 +34,7 @@
     </div>
 
     <div class="form-group">
-        <label class="control-label col-sm-2" for="fecha" text="#{offer.date}"></label>
+        <label class="control-label col-sm-2" for="fecha">Fecha:</label>
         <div class="col-sm-10">
             <input type="date" class="form-control" name="fecha" required="true"/>
             <span class="validate"></span>

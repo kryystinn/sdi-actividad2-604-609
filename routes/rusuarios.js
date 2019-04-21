@@ -98,22 +98,12 @@ module.exports = function (app, swig, gestorBD) {
         if (ids != null) {
             if ( typeof ids === 'string' ){ // 1 solo elemento seleccionado -> es un string
                 var criterio = {"_id": gestorBD.mongo.ObjectID(ids)};
-                gestorBD.eliminarUsuario(criterio, function (usuarios) {
-                    if (usuarios == null)
-                        res.send("Error al eliminar un usuario");
-                    else
-                        borrarOfertasUsuario(usuario); //borramos tambien sus ofertas
-                });
-            } else { // varios elementos -> es array
-                for (i = 0; i < ids.length; i++){
+                borrarUsuarios(res, criterio);
+            }
+            else { // varios elementos -> es array
+                for (i = 0; i < ids.length; i++) {
                     var criterio = {"_id": gestorBD.mongo.ObjectID(ids[i])};
-                    var usuario;
-                    gestorBD.eliminarUsuario(criterio, function (usuarios) {
-                        if (usuarios == null)
-                            res.send("Error al eliminar varios usuarios");
-                        else
-                            borrarOfertasUsuario(usuario); //borramos tambien sus ofertas
-                    });
+                    borrarUsuarios(res, criterio);
                 }
             }
             //Actualizamos y mostramos un mensaje
@@ -124,16 +114,30 @@ module.exports = function (app, swig, gestorBD) {
                 "&tipoMensaje=alert-danger");
     });
 
-    function borrarOfertasUsuario(usuario){
-        var criterio= {
-            email: usuario.email
-        };
-
-        gestorBD.eliminarOferta(criterio, function(ofertas) {
-            if (ofertas==null)
-                res.send("Error al eliminar ofertas de un usuario");
+    /**
+     * Elimina a un usuario del sistema junto con su informacion
+     * @param res
+     * @param criterio
+     */
+    function borrarUsuarios(res, criterio) {
+        // PRIMERO SUS OFERTAS
+        gestorBD.obtenerUsuarios(criterio, function (usuarios) {
+            if (usuarios == null || usuarios.length == 0)
+                res.send("No existe el usuario");
+            else {
+                var cBorrar = { seller: usuarios[0].email };
+                gestorBD.eliminarOferta(cBorrar, function (ofertas) {
+                    if (ofertas == null)
+                        res.send("Error al eliminar ofertas de un usuario");
+                });
+            }
         });
 
+        // DESPUES EL USUARIO DEL SISTEMA
+        gestorBD.eliminarUsuario(criterio, function (usuarios) {
+            if (usuarios == null)
+                res.send("Error al eliminar usuario(s)");
+        });
     }
 
     app.get('/usuarios', function(req, res) {
