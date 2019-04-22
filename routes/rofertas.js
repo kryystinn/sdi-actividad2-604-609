@@ -1,7 +1,6 @@
 module.exports = function (app, swig, gestorBD) {
     app.get("/tienda", function (req, res) {
         var criterio = {};
-
         if (req.query.busqueda != null)
             criterio = {"title": {$regex: ".*" + req.query.busqueda + ".*", $options: 'i'}};
 
@@ -25,7 +24,8 @@ module.exports = function (app, swig, gestorBD) {
                 var respuesta = swig.renderFile('views/tienda.html', {
                     ofertas: ofertas,
                     paginas: paginas,
-                    actual: pg
+                    actual: pg,
+                    usuario: req.session.usuario
                 });
                 res.send(respuesta);
             }
@@ -40,7 +40,8 @@ module.exports = function (app, swig, gestorBD) {
                res.send("Error al listar");
            else {
                var respuesta = swig.renderFile('views/ofertasUsuario.html', {
-                   ofertas: ofertas
+                   ofertas: ofertas,
+                   usuario: req.session.usuario
                });
                res.send(respuesta);
            }
@@ -49,7 +50,9 @@ module.exports = function (app, swig, gestorBD) {
 
     // Añadir una oferta
     app.get('/nuevaOferta', function (req, res) {
-        var respuesta = swig.renderFile('views/nuevaOferta.html', {});
+        var respuesta = swig.renderFile('views/nuevaOferta.html', {
+            usuario: req.session.usuario
+        });
         res.send(respuesta);
     });
 

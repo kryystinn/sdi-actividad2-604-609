@@ -143,7 +143,8 @@ module.exports = function (app, swig, gestorBD) {
                 res.send("Error al listar usuarios");
             else {
                 var respuesta = swig.renderFile('views/vistaAdmin.html', {
-                    usuarios: usuarios
+                    usuarios: usuarios,
+                    usuario: req.session.usuario
                 });
                 res.send(respuesta);
             }

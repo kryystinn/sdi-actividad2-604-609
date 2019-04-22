@@ -26,6 +26,7 @@
         </div>
         <div class="collapse navbar-collapse" id="myNavbar">
             <ul class="nav navbar-nav">
+                {% if usuario != null && usuario != "admin@email.com" %}
                 <li id="mInicio"><a href="/tienda">Inicio</a></li>
 
                 <li id="offers-menu" class="dropdown">
@@ -40,12 +41,17 @@
                 </li>
 
                 <li id="mCompras"><a href="/compras">Mis compras</a></li>
+                {% endif %}
             </ul>
 
             <ul class="nav navbar-nav navbar-right">
+                {% if usuario == null %}
                 <li><a href="/registrarse"><span class="glyphicon glyphicon-user"></span> Regístrate</a></li>
                 <li><a href="/identificarse"><span class="glyphicon glyphicon-log-in"></span> Identifícate</a></li>
+                {% endif %}
+                {% if usuario != null %}
                 <li><a href="/desconectarse"><span class="glyphicon glyphicon-log-out"></span> Desconectarse</a></li>
+                {% endif %}
             </ul>
         </div>
     </div>
