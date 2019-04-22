@@ -77,7 +77,7 @@ module.exports = function (app, swig, gestorBD) {
                 req.session.usuario = null;
                 res.redirect("/identificarse" +
                     "?mensaje=Email o password incorrecto" +
-                    "&tipoMensaje=alert-danger ");
+                    "&tipoMensaje=alert-danger");
             }
             // Si el usuario que se identifica NO es admin (se redirige a vista normal):
             else if (criterio.email != admin) {
@@ -120,16 +120,17 @@ module.exports = function (app, swig, gestorBD) {
      * @param criterio
      */
     function borrarUsuarios(res, criterio) {
-        var cBorrar = {};
         gestorBD.obtenerUsuarios(criterio, function (usuarios) {
             if (usuarios == null || usuarios.length == 0)
                 res.send("No existe el usuario");
-            else
-                cBorrar = { seller: usuarios[0].email };
-        });
-        gestorBD.eliminarOferta(cBorrar, function (ofertas) {
-            if (ofertas == null)
-                res.send("Error al eliminar ofertas de un usuario");
+            else {
+                var cBorrar = { seller: usuarios[0].email };
+                gestorBD.eliminarOferta(cBorrar, function (ofertas) {
+                    if (ofertas == null)
+                        res.send("Error al eliminar ofertas de un usuario");
+                });
+            }
+
         });
         gestorBD.eliminarUsuario(criterio, function (usuarios) {
             if (usuarios == null)

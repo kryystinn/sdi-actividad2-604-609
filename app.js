@@ -23,6 +23,17 @@ app.use(expressSession({
     saveUninitialized: true
 }));
 
+var routerAdminSession = express.Router();
+routerUsuarioSession.use(function (req, res, next) {
+    console.log("routerUsuarioSession");
+    if (req.session.usuario == "admin@email.com") // dejamos correr la petición
+        next();
+    else
+        res.redirect("/identificarse?mensaje=Acceso denegado."+
+            "&tipoMensaje=alert-danger");
+});
+app.use('/usuarios',routerAdminSession);
+
 
 // Variables
 app.set('port', 8081);
