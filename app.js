@@ -24,12 +24,12 @@ app.use(expressSession({
 }));
 
 var routerAdminSession = express.Router();
-routerUsuarioSession.use(function (req, res, next) {
-    console.log("routerUsuarioSession");
+routerAdminSession.use(function (req, res, next) {
+    console.log("routerAdminSession");
     if (req.session.usuario == "admin@email.com") // dejamos correr la petición
         next();
     else
-        res.redirect("/identificarse?mensaje=Acceso denegado."+
+        res.redirect("/tienda?mensaje=Acceso denegado."+
             "&tipoMensaje=alert-danger");
 });
 app.use('/usuarios',routerAdminSession);
