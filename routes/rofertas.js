@@ -1,4 +1,12 @@
 module.exports = function (app, swig, gestorBD) {
+
+    // Función para controlar las sesiones
+    function globalRender(route, params, session){
+        params['user'] = session.usuario;
+        params['role'] = session.usuario.role;
+        return swig.renderFile(route, params);
+    }
+
     app.get("/tienda", function (req, res) {
         var criterio = {};
         if (req.query.busqueda != null)
@@ -21,13 +29,11 @@ module.exports = function (app, swig, gestorBD) {
                     if (i > 0 && i <= ultimaPg)
                         paginas.push(i);
 
-                var respuesta = swig.renderFile('views/tienda.html', {
-                    ofertas: ofertas,
-                    paginas: paginas,
-                    actual: pg,
-                    usuario: req.session.usuario
-                });
-                res.send(respuesta);
+                var params = [];
+                params['ofertas'] = ofertas;
+                params['paginas'] = paginas;
+                params['actual'] = pg;
+                res.send(globalRender('views/tienda.html', params, req.session));
             }
         });
 
@@ -39,21 +45,17 @@ module.exports = function (app, swig, gestorBD) {
            if (ofertas == null)
                res.send("Error al listar");
            else {
-               var respuesta = swig.renderFile('views/ofertasUsuario.html', {
-                   ofertas: ofertas,
-                   usuario: req.session.usuario
-               });
-               res.send(respuesta);
+               var params = [];
+               params['ofertas'] = ofertas;
+               res.send(globalRender('views/ofertasUsuario.html', params, req.session));
            }
        });
     });
 
     // Añadir una oferta
     app.get('/nuevaOferta', function (req, res) {
-        var respuesta = swig.renderFile('views/nuevaOferta.html', {
-            usuario: req.session.usuario
-        });
-        res.send(respuesta);
+        var params = [];
+        res.send(globalRender('views/nuevaOferta.html', params, req.session));
     });
 
     // Al añadir una oferta

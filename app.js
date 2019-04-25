@@ -25,8 +25,8 @@ app.use(expressSession({
 
 var routerAdminSession = express.Router();
 routerAdminSession.use(function (req, res, next) {
-    console.log("routerAdminSession");
-    if (req.session.usuario == "admin@email.com") // dejamos correr la petición
+    var role = req.session.usuario.role;
+    if (role == "admin") // dejamos correr la petición
         next();
     else
         res.redirect("/tienda?mensaje=Acceso denegado."+

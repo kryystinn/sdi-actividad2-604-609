@@ -1,9 +1,16 @@
 module.exports = function (app, swig, gestorBD) {
 
+    // Función para controlar las sesiones
+    function globalRender(route, params, session){
+        params['user'] = session.usuario;
+        params['role'] = session.usuario.role;
+        return swig.renderFile(route, params);
+    }
+
+
     // Registrarse
     app.get('/registrarse', function (req, res) {
-        var respuesta = swig.renderFile('views/registro.html', {});
-        res.send(respuesta);
+        res.send(swig.renderFile('views/registro.html', {}));
     });
 
     // Añadir un nuevo usuario
@@ -55,9 +62,9 @@ module.exports = function (app, swig, gestorBD) {
     });
 
     app.get("/identificarse", function (req, res) {
-        if (req.session.usuario === null) {
-            var respuesta = swig.renderFile('views/identificacion.html', {});
-            res.send(respuesta);
+        if (req.session.usuario == null) {
+            res.send(swig.renderFile('views/identificacion.html', {}));
+
         }else
             res.redirect("/tienda");
     });
@@ -84,12 +91,12 @@ module.exports = function (app, swig, gestorBD) {
                 }
                 // Si el usuario que se identifica NO es admin (se redirige a vista normal):
                 else if (criterio.email != admin) {
-                    req.session.usuario = usuarios[0].email;
+                    req.session.usuario = usuarios[0];
                     res.redirect("/tienda");
                 }
                 // Si el usuario que se identifica SÍ es admin (se redirige a vista de admin):
                 else {
-                    req.session.usuario = usuarios[0].email;
+                    req.session.usuario = usuarios[0];
                     res.redirect("/usuarios");
                 }
             });
@@ -146,11 +153,9 @@ module.exports = function (app, swig, gestorBD) {
             if (usuarios==null)
                 res.send("Error al listar usuarios");
             else {
-                var respuesta = swig.renderFile('views/vistaAdmin.html', {
-                    usuarios: usuarios,
-                    usuario: req.session.usuario
-                });
-                res.send(respuesta);
+                params = [];
+                params['usuarios'] = usuarios;
+                res.send(globalRender('views/vistaAdmin.html', params, req.session));
             }
         });
     });
