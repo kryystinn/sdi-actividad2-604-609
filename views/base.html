@@ -49,8 +49,26 @@
                 <li><a href="/registrarse"><span class="glyphicon glyphicon-user"></span> Regístrate</a></li>
                 <li><a href="/identificarse"><span class="glyphicon glyphicon-log-in"></span> Identifícate</a></li>
                 {% endif %}
+
                 {% if user %}
-                <li><a href="/desconectarse"><span class="glyphicon glyphicon-log-out"></span> Desconectarse</a></li>
+                <li class="dropdown">
+                    <a id="btnGroup"
+                       class="dropdown-toggle" data-toggle="dropdown" role="button"
+                       aria-haspopup="true" aria-expanded="false" style="color: white;">
+                        <span id="loggedUser"> {{ user.email }}</span>
+                        <span class="caret"></span>
+                    </a>
+
+                    <ul id="usersdropdownMenuButton" class="dropdown-menu">
+                        {% if role != 'admin' %}
+                        <li style="text-align:center">
+                            <span style="font-size: 20pt; color: darkred; font-weight: bold"> {{ user.balance }} €</span>
+                        </li>
+                        {% endif %}
+
+                        <li><a href="/desconectarse"><span class="glyphicon glyphicon-log-out"></span> Desconectarse</a></li>
+                    </ul>
+                </li>
                 {% endif %}
             </ul>
         </div>
