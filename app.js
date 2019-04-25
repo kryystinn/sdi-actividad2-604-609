@@ -34,6 +34,19 @@ routerAdminSession.use(function (req, res, next) {
 });
 app.use('/usuarios',routerAdminSession);
 
+var routerUserSession = express.Router();
+routerUserSession.use(function (req, res, next) {
+    var role = req.session.usuario.role;
+    if (role == "user") // dejamos correr la petición
+        next();
+    else
+        res.redirect("/usuarios?mensaje=Acceso denegado."+
+            "&tipoMensaje=alert-danger");
+});
+app.use('/tienda',routerUserSession);
+app.use('/nuevaOferta', routerUserSession);
+app.use('/misOfertas', routerUserSession);
+
 
 // Variables
 app.set('port', 8081);

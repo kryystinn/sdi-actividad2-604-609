@@ -69,7 +69,7 @@ module.exports = function (app, swig, gestorBD) {
                 details: req.body.detalle,
                 date: req.body.fecha,
                 price: req.body.precio,
-                seller: req.session.usuario
+                seller: req.session.usuario.email
             };
             // Conectarse
             gestorBD.insertarOferta(oferta, function (id) {
@@ -81,4 +81,25 @@ module.exports = function (app, swig, gestorBD) {
             });
         }
     });
+
+    // Compras del usuario
+    app.get('/misCompras', function (req, res) {
+        var criterio = { "usuario" : req.session.usuario };
+        gestorBD.obtenerCompras(criterio ,function(compras){
+            if (compras == null) {
+                res.send("Error al listar ");
+            } else {
+                var ofertasCompradasIds = [];
+                for(i=0; i < compras.length; i++){
+                    ofertasCompradasIds.push( compras[i].ofertaId );
+                }
+                var criterio = { "_id" : { $in: ofertasCompradasIds } };
+                gestorBD.obtenerOfertas(criterio ,function(ofertas){
+                    var params = [];
+                    params['compras'] = ofertas;
+                    res.send(globalRender('views/comprasUsuario.html', params, req.session));
+                });
+            }
+        });
+    })
 };
