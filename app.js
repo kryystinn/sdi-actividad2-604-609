@@ -44,8 +44,7 @@ routerUserSession.use(function (req, res, next) {
             "&tipoMensaje=alert-danger");
 });
 app.use('/tienda',routerUserSession);
-app.use('/nuevaOferta', routerUserSession);
-app.use('/misOfertas', routerUserSession);
+app.use('/ofertas/*', routerUserSession);
 
 
 // Variables

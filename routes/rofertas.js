@@ -39,8 +39,8 @@ module.exports = function (app, swig, gestorBD) {
 
     });
 
-    app.get('/misOfertas', function (req, res) {
-       var criterio = { seller: req.session.usuario };
+    app.get('/ofertas/propias', function (req, res) {
+       var criterio = { seller: req.session.usuario.email };
        gestorBD.obtenerOfertas(criterio, function(ofertas){
            if (ofertas == null)
                res.send("Error al listar");
@@ -52,9 +52,24 @@ module.exports = function (app, swig, gestorBD) {
        });
     });
 
+    // Dar de baja una oferta.
+    app.get('/oferta/eliminar/:id', function (req, res) {
+        var criterio = {"_id" : gestorBD.mongo.ObjectID(req.params.id) };
+        gestorBD.eliminarOferta(criterio,function(ofertas){
+            if ( ofertas == null ){
+                res.send("Error al eliminar oferta.");
+            } else {
+                res.redirect("/ofertas/propias");
+            }
+        });
+    });
+
     // Añadir una oferta
-    app.get('/nuevaOferta', function (req, res) {
+    app.get('/oferta/agregar', function (req, res) {
+        var dt = new Date();
+        var fecha = dt.toLocaleDateString();
         var params = [];
+        params['date'] = fecha;
         res.send(globalRender('views/nuevaOferta.html', params, req.session));
     });
 
@@ -69,22 +84,24 @@ module.exports = function (app, swig, gestorBD) {
                 details: req.body.detalle,
                 date: req.body.fecha,
                 price: req.body.precio,
-                seller: req.session.usuario.email
+                seller: req.session.usuario.email,
+                sold: false,
+                buyer: null
             };
             // Conectarse
             gestorBD.insertarOferta(oferta, function (id) {
                 if (id == null) {
                     res.send("Error al insertar ");
                 } else {
-                    res.redirect("/tienda");
+                    res.redirect("/ofertas/propias");
                 }
             });
         }
     });
 
     // Compras del usuario
-    app.get('/misCompras', function (req, res) {
-        var criterio = { "usuario" : req.session.usuario };
+    app.get('/ofertas/compras', function (req, res) {
+        var criterio = { "usuario" : req.session.usuario.email };
         gestorBD.obtenerCompras(criterio ,function(compras){
             if (compras == null) {
                 res.send("Error al listar ");
