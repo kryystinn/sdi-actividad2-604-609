@@ -1,7 +1,7 @@
 module.exports = function (app, swig, gestorBD) {
 
     // Función para controlar las sesiones
-    function globalRender(route, params, session){
+    function globalRender(route, params, session) {
         params['user'] = session.usuario;
         params['role'] = session.usuario.role;
         return swig.renderFile(route, params);
@@ -40,23 +40,23 @@ module.exports = function (app, swig, gestorBD) {
     });
 
     app.get('/ofertas/propias', function (req, res) {
-       var criterio = { seller: req.session.usuario.email };
-       gestorBD.obtenerOfertas(criterio, function(ofertas){
-           if (ofertas == null)
-               res.send("Error al listar");
-           else {
-               var params = [];
-               params['ofertas'] = ofertas;
-               res.send(globalRender('views/ofertasUsuario.html', params, req.session));
-           }
-       });
+        var criterio = {seller: req.session.usuario.email};
+        gestorBD.obtenerOfertas(criterio, function (ofertas) {
+            if (ofertas == null)
+                res.send("Error al listar");
+            else {
+                var params = [];
+                params['ofertas'] = ofertas;
+                res.send(globalRender('views/ofertasUsuario.html', params, req.session));
+            }
+        });
     });
 
     // Dar de baja una oferta.
-    app.get('/oferta/eliminar/:id', function (req, res) {
-        var criterio = {"_id" : gestorBD.mongo.ObjectID(req.params.id) };
-        gestorBD.eliminarOferta(criterio,function(ofertas){
-            if ( ofertas == null ){
+    app.get('/ofertas/eliminar/:id', function (req, res) {
+        var criterio = {"_id": gestorBD.mongo.ObjectID(req.params.id)};
+        gestorBD.eliminarOferta(criterio, function (ofertas) {
+            if (ofertas == null) {
                 res.send("Error al eliminar oferta.");
             } else {
                 res.redirect("/ofertas/propias");
@@ -65,7 +65,7 @@ module.exports = function (app, swig, gestorBD) {
     });
 
     // Añadir una oferta
-    app.get('/oferta/agregar', function (req, res) {
+    app.get('/ofertas/agregar', function (req, res) {
         var dt = new Date();
         var fecha = dt.toLocaleDateString();
         var params = [];
@@ -99,24 +99,59 @@ module.exports = function (app, swig, gestorBD) {
         }
     });
 
-    // Compras del usuario
-    app.get('/ofertas/compras', function (req, res) {
-        var criterio = { "usuario" : req.session.usuario.email };
-        gestorBD.obtenerCompras(criterio ,function(compras){
-            if (compras == null) {
-                res.send("Error al listar ");
+    // Comprar una oferta
+    app.get('/ofertas/comprar/:id', function (req, res) {
+        // PRIMERO: modificamos la oferta a VENDIDA y le añadimos el COMPRADOR
+        var criterio = {"_id": gestorBD.mongo.ObjectID(req.params.id)};
+        var oferta = {
+            sold: true,
+            buyer: req.session.usuario.email
+        };
+        gestorBD.modificarOferta(criterio, oferta, function (result) {
+            if (result == null) {
+                res.send("Error al modificar la oferta");
+
+                // SEGUNDO: obtenemos el dinero de la oferta a comprar
             } else {
-                var ofertasCompradasIds = [];
-                for(i=0; i < compras.length; i++){
-                    ofertasCompradasIds.push( compras[i].ofertaId );
-                }
-                var criterio = { "_id" : { $in: ofertasCompradasIds } };
-                gestorBD.obtenerOfertas(criterio ,function(ofertas){
-                    var params = [];
-                    params['compras'] = ofertas;
-                    res.send(globalRender('views/comprasUsuario.html', params, req.session));
+                gestorBD.obtenerOfertas(criterio, function (oferta) {
+                    if (result == null) {
+                        res.send("Error al modificar la oferta");
+
+                        // TERCERO: modificamos el DINERO del COMPRADOR
+                    }else {
+                        var criterio = {"_id": gestorBD.mongo.ObjectID(req.session.usuario._id)};
+                        var precioCompra = oferta[0].price;
+                        var comprador = {
+                            balance: parseInt(req.session.usuario.balance) - parseInt(precioCompra)
+                        };
+                        gestorBD.modificarUsuario(criterio, comprador, function (idUser) {
+                            if (idUser == null)
+                                res.send("Error al modificar usuario.");
+                            else {
+                                req.session.usuario.balance = comprador.balance;
+                                res.redirect("/tienda");
+                            }
+                        });
+                    }
                 });
             }
         });
-    })
-};
+    });
+
+    // Compras del usuario
+    app.get('/ofertas/compras', function (req, res) {
+        var criterio = {"buyer": req.session.usuario.email};
+        gestorBD.obtenerOfertas(criterio, function (compras) {
+            if (compras == null) {
+                res.send("Error al listar.");
+            } else {
+                var params = [];
+                params['compras'] = compras;
+                res.send(globalRender('views/comprasUsuario.html', params, req.session));
+            }
+
+        });
+    });
+
+}
+;

@@ -39,9 +39,17 @@
                         <td style="text-align: center"> {{ oferta.title }}</td>
                         <td style="text-align: center"> {{ oferta.details }}</td>
                         <td style="text-align: center"> {{ oferta.price }}</td>
+                        {% if !oferta.sold %}
                         <td style="text-align: center">
-                            <button type="button" class="btn btn-info" style="text-align: center">Comprar</button>
+                            <form action="/ofertas/comprar/{{oferta._id.toString()}}">
+                                <input type="submit" value = "Comprar" />
+                            </form>
                         </td>
+                        {% else %}
+                        <td style="text-align: center">
+                            <button type="button" class="btn btn-success" disabled>Vendido</button>
+                        </td>
+                        {% endif %}
                     </tr>
                 </div>
             {% endif %}

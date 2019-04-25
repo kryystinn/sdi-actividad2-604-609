@@ -57,6 +57,23 @@ module.exports = {
             }
         });
     },
+    modificarUsuario : function(criterio, usuario, funcionCallback) {
+        this.mongo.MongoClient.connect(this.app.get('db'), function(err, db) {
+            if (err) {
+                funcionCallback(null);
+            } else {
+                var collection = db.collection('usuarios');
+                collection.update(criterio, {$set: usuario}, function(err, result) {
+                    if (err) {
+                        funcionCallback(null);
+                    } else {
+                        funcionCallback(result);
+                    }
+                    db.close();
+                });
+            }
+        });
+    },
     // ---------------------------------OPERACIONES OFERTAS---------------------------------
 
     obtenerOfertasPg : function(criterio,pg,funcionCallback){
@@ -129,22 +146,22 @@ module.exports = {
             }
         });
     },
-    // ---------------------------------OPERACIONES COMPRAS---------------------------------
-    obtenerCompras: function(criterio,funcionCallback){
+    modificarOferta : function(criterio, oferta, funcionCallback) {
         this.mongo.MongoClient.connect(this.app.get('db'), function(err, db) {
             if (err) {
                 funcionCallback(null);
             } else {
-                var collection = db.collection('compras');
-                collection.find(criterio).toArray(function(err, usuarios) {
+                var collection = db.collection('ofertas');
+                collection.update(criterio, {$set: oferta}, function(err, result) {
                     if (err) {
                         funcionCallback(null);
                     } else {
-                        funcionCallback(usuarios);
+                        funcionCallback(result);
                     }
                     db.close();
                 });
             }
         });
     },
+
 };

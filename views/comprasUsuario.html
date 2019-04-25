@@ -3,7 +3,7 @@
 {% block contenido_principal %}
 
 <h1 style="text-align: left;">Mis Compras</h1>
-{% if ofertas.length == 0 %}
+{% if compras.length == 0 %}
 <p style="margin-top: 25px;">Aún no has comprado ninguna oferta.</p>
 {% else %}
 <div class="table-responsive" style="margin-top: 30px">
@@ -16,13 +16,13 @@
             <th style="text-align: center">Vendedor</th>
         </tr>
         </thead>
-        {% for oferta in ofertas %}
+        {% for compra in compras %}
         <div class="col-xs-6 col-sm-6 col-md-4 col-lg-3">
             <tr>
-                <td style="text-align: center"> {{ oferta.title }}</td>
-                <td style="text-align: center"> {{ oferta.details }}</td>
-                <td style="text-align: center"> {{ oferta.price }}</td>
-                <td style="text-align: center"> {{ oferta.seller }}</td>
+                <td style="text-align: center"> {{ compra.title }}</td>
+                <td style="text-align: center"> {{ compra.details }}</td>
+                <td style="text-align: center"> {{ compra.price }}</td>
+                <td style="text-align: center"> {{ compra.seller }}</td>
             </tr>
         </div>
         {% endfor %}
