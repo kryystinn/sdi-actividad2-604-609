@@ -108,16 +108,16 @@ module.exports = function (app, swig, gestorBD) {
         if (ids != null) {
             if ( typeof ids === 'string' ){ // 1 solo elemento seleccionado -> es un string
                 var criterio = {"_id": gestorBD.mongo.ObjectID(ids)};
-                borrarUsuarios(res, criterio);
+                borrarUsuario(res, criterio);
             }
             else { // varios elementos -> es array
                 for (i = 0; i < ids.length; i++) {
                     var criterio = {"_id": gestorBD.mongo.ObjectID(ids[i])};
-                    borrarUsuarios(res, criterio);
+                    borrarUsuario(res, criterio);
                 }
             }
             //Actualizamos y mostramos un mensaje
-            res.redirect("/usuarios?mensaje=Usuario(s) eliminado(s) correctamente")
+            res.redirect("/usuarios?mensaje=Usuario(s) eliminado(s) correctamente");
         }
         else //Si pulsa el boton sin seleccionar nada se lo indicamos
             res.redirect("/usuarios?mensaje=No hay ningún usuario seleccionado" +
@@ -129,18 +129,17 @@ module.exports = function (app, swig, gestorBD) {
      * @param res
      * @param criterio
      */
-    function borrarUsuarios(res, criterio) {
+    function borrarUsuario(res, criterio) {
         gestorBD.obtenerUsuarios(criterio, function (usuarios) {
             if (usuarios == null || usuarios.length == 0)
                 res.send("No existe el usuario");
             else {
-                var cBorrar = { seller: usuarios[0].email };
+                var cBorrar = {seller: usuarios[0].email};
                 gestorBD.eliminarOferta(cBorrar, function (ofertas) {
                     if (ofertas == null)
                         res.send("Error al eliminar ofertas de un usuario");
                 });
             }
-
         });
         gestorBD.eliminarUsuario(criterio, function (usuarios) {
             if (usuarios == null)

@@ -33,26 +33,26 @@
             </tr>
             </thead>
             {% for oferta in ofertas %}
-            {% if oferta.seller != user.email %}
-                <div class="col-xs-6 col-sm-6 col-md-4 col-lg-3">
-                    <tr>
-                        <td style="text-align: center"> {{ oferta.title }}</td>
-                        <td style="text-align: center"> {{ oferta.details }}</td>
-                        <td style="text-align: center"> {{ oferta.price }}</td>
-                        {% if !oferta.sold %}
-                        <td style="text-align: center">
-                            <form action="/ofertas/comprar/{{oferta._id.toString()}}">
-                                <input type="submit" value = "Comprar" />
-                            </form>
-                        </td>
-                        {% else %}
-                        <td style="text-align: center">
-                            <button type="button" class="btn btn-success" disabled>Vendido</button>
-                        </td>
-                        {% endif %}
-                    </tr>
-                </div>
-            {% endif %}
+                {% if oferta.seller != user.email %}
+                    <div class="col-xs-6 col-sm-6 col-md-4 col-lg-3">
+                        <tr>
+                            <td style="text-align: center"> {{ oferta.title }}</td>
+                            <td style="text-align: center"> {{ oferta.details }}</td>
+                            <td style="text-align: center"> {{ oferta.price }}</td>
+                            {% if !oferta.sold %}
+                                <td style="text-align: center">
+                                    <form action="/ofertas/comprar/{{oferta._id.toString()}}">
+                                        <button type="button" class="btn btn-info">Comprar</button>
+                                    </form>
+                                </td>
+                            {% else %}
+                                <td style="text-align: center">
+                                    <button type="button" class="btn btn-success" disabled>Vendido</button>
+                                </td>
+                            {% endif %}
+                        </tr>
+                    </div>
+                {% endif %}
             {% endfor %}
         </table>
     </div>
@@ -60,12 +60,12 @@
     <div class="row text-center">
         <ul class="pagination">
             {% for pagina in paginas %}
-            <li class="page-item" id="pi-{{ pagina}}">
+            <li class="page-item" id="pi-{{ pagina }}">
                 <a class="page-link" href="/tienda?pg={{ pagina }}">{{ pagina }}</a>
             </li>
             {% endfor %}
             <script>
-                $("#pi-{{ actual}}").addClass("active");
+                $("#pi-{{ actual }}").addClass("active");
             </script>
         </ul>
     </div>

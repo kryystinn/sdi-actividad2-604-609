@@ -10,18 +10,19 @@
         <table class="table table-hover" id="tableUsers">
             <thead>
             <tr>
-                <th style="text-align: left">Título</th>
-                <th style="text-align: left">Detalles</th>
-                <th style="text-align: left">Precio</th>
+                <th style="text-align: center">Título</th>
+                <th style="text-align: center">Detalles</th>
+                <th style="text-align: center">Precio</th>
+                <th></th>
             </tr>
             </thead>
             {% for oferta in ofertas %}
             <div class="col-xs-6 col-sm-6 col-md-4 col-lg-3">
                 <tr>
-                    <td style="text-align: left"> {{ oferta.title }}</td>
-                    <td style="text-align: left"> {{ oferta.details }}</td>
-                    <td style="text-align: left"> {{ oferta.price }}</td>
-                    <td><a href="/ofertas/eliminar/{{ oferta._id.toString() }}">Eliminar</a></td>
+                    <td style="text-align: center"> {{ oferta.title }}</td>
+                    <td style="text-align: center"> {{ oferta.details }}</td>
+                    <td style="text-align: center"> {{ oferta.price }}</td>
+                    <td style="text-align: center"><a href="/ofertas/eliminar/{{ oferta._id.toString() }}">Eliminar</a></td>
                 </tr>
             </div>
             {% endfor %}

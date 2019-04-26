@@ -34,6 +34,14 @@ module.exports = function (app, swig, gestorBD) {
                 params['paginas'] = paginas;
                 params['actual'] = pg;
                 res.send(globalRender('views/tienda.html', params, req.session));
+                /*var respuesta = swig.renderFile('views/tienda.html', {
+                    ofertas: ofertas,
+                    paginas: paginas,
+                    actual: pg,
+                    user: req.session.usuario,
+                    role: req.session.usuario.role
+                });
+                res.send(respuesta);*/
             }
         });
 
