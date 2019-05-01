@@ -2,6 +2,8 @@ module.exports = function (app, swig, gestorBD) {
 
     // Función para controlar las sesiones
     function globalRender(route, params, session) {
+        if (params === null)
+            params = [];
         params['user'] = session.usuario;
         params['role'] = session.usuario.role;
         return swig.renderFile(route, params);
@@ -34,14 +36,6 @@ module.exports = function (app, swig, gestorBD) {
                 params['paginas'] = paginas;
                 params['actual'] = pg;
                 res.send(globalRender('views/tienda.html', params, req.session));
-                /*var respuesta = swig.renderFile('views/tienda.html', {
-                    ofertas: ofertas,
-                    paginas: paginas,
-                    actual: pg,
-                    user: req.session.usuario,
-                    role: req.session.usuario.role
-                });
-                res.send(respuesta);*/
             }
         });
 
@@ -74,11 +68,7 @@ module.exports = function (app, swig, gestorBD) {
 
     // Añadir una oferta
     app.get('/ofertas/agregar', function (req, res) {
-        var dt = new Date();
-        var fecha = dt.toLocaleDateString();
-        var params = [];
-        params['date'] = fecha;
-        res.send(globalRender('views/nuevaOferta.html', params, req.session));
+        res.send(globalRender('views/nuevaOferta.html', null, req.session));
     });
 
     // Al añadir una oferta
@@ -87,10 +77,12 @@ module.exports = function (app, swig, gestorBD) {
             res.redirect("/registrarse");
             return;
         } else {
+            let dt = new Date();
+            let fecha = dt.toLocaleDateString();
             var oferta = {
                 title: req.body.titulo,
                 details: req.body.detalle,
-                date: req.body.fecha,
+                date: fecha,
                 price: req.body.precio,
                 seller: req.session.usuario.email,
                 sold: false,

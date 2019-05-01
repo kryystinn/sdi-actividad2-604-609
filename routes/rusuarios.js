@@ -16,21 +16,21 @@ module.exports = function (app, swig, gestorBD) {
     // Añadir un nuevo usuario
     app.post('/usuario', function (req, res) {
 
-        var criterio = {email: req.body.email};
+        let criterio = {email: req.body.email};
 
         // Obtenemos la lista de usuarios con el mismo email
         gestorBD.obtenerUsuarios(criterio, function (usuarios) {
             // Si no hay ningún email igual al introducido en la BD:
             if (usuarios == null || usuarios.length == 0) {
 
-                var pass = app.get("crypto").createHmac('sha256', app.get('clave'))
+                let pass = app.get("crypto").createHmac('sha256', app.get('clave'))
                     .update(req.body.password).digest('hex');
-                var passConf = app.get("crypto").createHmac('sha256', app.get('clave'))
+                let passConf = app.get("crypto").createHmac('sha256', app.get('clave'))
                     .update(req.body.passwordConfirm).digest('hex');
 
                 // Se comprueba que las contraseñas son iguales:
                 if (pass === passConf) {
-                    var usuario = {
+                    let usuario = {
                         email: req.body.email,
                         name: req.body.nombre,
                         surname: req.body.apellidos,
@@ -71,57 +71,55 @@ module.exports = function (app, swig, gestorBD) {
 
         // Identificación del usuario
     app.post("/identificarse", function (req, res) {
-            var pass = app.get("crypto").createHmac('sha256', app.get('clave'))
-                .update(req.body.password).digest('hex');
+        let pass = app.get("crypto").createHmac('sha256', app.get('clave'))
+            .update(req.body.password).digest('hex');
 
-            var criterio = {
-                email: req.body.email,
-                password: pass
-            };
-            var admin = "admin@email.com";
+        let criterio = {
+            email: req.body.email,
+            password: pass
+        };
+        let admin = "admin@email.com";
 
-            // Entramos en sesión
-            gestorBD.obtenerUsuarios(criterio, function (usuarios) {
-                // Si no existe el usuario en la BD:
-                if (usuarios == null || usuarios.length == 0) {
-                    req.session.usuario = null;
-                    res.redirect("/identificarse" +
-                        "?mensaje=Email o password incorrecto" +
-                        "&tipoMensaje=alert-danger");
-                }
-                // Si el usuario que se identifica NO es admin (se redirige a vista normal):
-                else if (criterio.email != admin) {
-                    req.session.usuario = usuarios[0];
-                    res.redirect("/tienda");
-                }
-                // Si el usuario que se identifica SÍ es admin (se redirige a vista de admin):
-                else {
-                    req.session.usuario = usuarios[0];
-                    res.redirect("/usuarios");
-                }
-            });
+        // Entramos en sesión
+        gestorBD.obtenerUsuarios(criterio, function (usuarios) {
+            // Si no existe el usuario en la BD:
+            if (usuarios == null || usuarios.length == 0) {
+                req.session.usuario = null;
+                res.redirect("/identificarse" +
+                    "?mensaje=Email o password incorrecto" +
+                    "&tipoMensaje=alert-danger");
+            }
+            // Si el usuario que se identifica NO es admin (se redirige a vista normal):
+            else if (criterio.email != admin) {
+                req.session.usuario = usuarios[0];
+                res.redirect("/tienda");
+            }
+            // Si el usuario que se identifica SÍ es admin (se redirige a vista de admin):
+            else {
+                req.session.usuario = usuarios[0];
+                res.redirect("/usuarios");
+            }
+        });
     });
 
     app.post("/usuario/eliminar", function(req, res){
-        var ids = req.body.checkboxes;
+        let ids = req.body.checkboxes;
 
         if (ids != null) {
             if ( typeof ids === 'string' ){ // 1 solo elemento seleccionado -> es un string
-                var criterio = {"_id": gestorBD.mongo.ObjectID(ids)};
+                let criterio = {"_id": gestorBD.mongo.ObjectID(ids)};
                 borrarUsuario(res, criterio);
             }
-            else { // varios elementos -> es array
+            else {
                 for (i = 0; i < ids.length; i++) {
                     var criterio = {"_id": gestorBD.mongo.ObjectID(ids[i])};
                     borrarUsuario(res, criterio);
                 }
             }
-            //Actualizamos y mostramos un mensaje
             res.redirect("/usuarios?mensaje=Usuario(s) eliminado(s) correctamente");
         }
         else //Si pulsa el boton sin seleccionar nada se lo indicamos
-            res.redirect("/usuarios?mensaje=No hay ningún usuario seleccionado" +
-                "&tipoMensaje=alert-danger");
+            res.redirect("/usuarios?mensaje=No hay ningún usuario seleccionado&tipoMensaje=alert-danger");
     });
 
     /**
@@ -134,22 +132,22 @@ module.exports = function (app, swig, gestorBD) {
             if (usuarios == null || usuarios.length == 0)
                 res.send("No existe el usuario");
             else {
-                var cBorrar = {seller: usuarios[0].email};
+                let cBorrar = {seller: usuarios[0].email};
                 gestorBD.eliminarOferta(cBorrar, function (ofertas) {
                     if (ofertas == null)
                         res.send("Error al eliminar ofertas de un usuario");
                 });
+                gestorBD.eliminarUsuario(criterio, function (usuarios) {
+                    if (usuarios == null)
+                        res.send("Error al eliminar usuario(s)");
+                });
             }
-        });
-        gestorBD.eliminarUsuario(criterio, function (usuarios) {
-            if (usuarios == null)
-                res.send("Error al eliminar usuario(s)");
         });
     }
 
     app.get('/usuarios', function(req, res) {
         gestorBD.obtenerUsuarios({}, function (usuarios) {
-            if (usuarios==null)
+            if (usuarios == null)
                 res.send("Error al listar usuarios");
             else {
                 params = [];
