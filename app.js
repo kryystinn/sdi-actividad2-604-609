@@ -2,6 +2,9 @@
 var express = require('express');
 var app = express();
 
+// modulo jsonwebtoken -> encriptaciones api rest
+var jwt = require('jsonwebtoken');
+app.set('jwt',jwt);
 
 var bodyParser = require('body-parser');
 app.use(bodyParser.json());
@@ -22,6 +25,40 @@ app.use(expressSession({
     resave: true,
     saveUninitialized: true
 }));
+
+// routerUsuarioToken
+var routerUserToken = express.Router();
+routerUserToken.use(function (req, res, next) {
+    // obtener el token, vía headers (opcionalmente GET y/o POST).
+    var token = req.headers['token'] || req.body.token || req.query.token;
+    if (token != null) {
+        // verificamos el token
+        jwt.verify(token, 'secreto', function (err, infoToken) {
+            // Si no hay o no lo desencriptamos en mas de 240 seg -> error
+            if (err || (Date.now() / 1000 - infoToken.tiempo) > 240) {
+                res.status(403);
+                res.json({
+                    acceso: false,
+                    error: 'Token invalido o caducado'
+                });
+                return;
+            } else {
+                // si lo desencriptamos dejamos correr la peticion
+                res.usuario = infoToken.usuario;
+                next();
+            }
+        });
+    } else {
+        res.status(403);
+        res.json({
+            acceso: false,
+            mensaje: 'No hay Token'
+        });
+    }
+});
+
+// Aplicar routerUsuarioToken
+app.use('/api/ofertas', routerUserToken);
 
 var routerAdminSession = express.Router();
 routerAdminSession.use(function (req, res, next) {
@@ -55,9 +92,9 @@ app.set('crypto',crypto);
 
 
 //Rutas/controladores por lógica
-require("./routes/rusuarios.js")(app, swig, gestorBD); // (app, param1, param2, etc.)
-require("./routes/rofertas.js")(app, swig, gestorBD); // (app, param1, param2, etc.)
-
+require("./routes/rusuarios.js")(app, swig, gestorBD);
+require("./routes/rofertas.js")(app, swig, gestorBD);
+require("./routes/rapimywallapop.js")(app, gestorBD);
 
 app.get('/', function (req, res) {
     res.redirect('/identificarse');
