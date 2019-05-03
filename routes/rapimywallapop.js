@@ -7,9 +7,6 @@ module.exports = function (app, gestorBD) {
             email: req.body.email,
             password: seguro
         };
-
-        //Aqui deberia de ir la validacion de los datos introducidos
-
         gestorBD.obtenerUsuarios(criterio, function (usuarios) {
             if (usuarios == null || usuarios.length == 0) {
                 res.status(401); // Unauthorized
@@ -32,9 +29,7 @@ module.exports = function (app, gestorBD) {
     });
 
     app.get("/api/ofertas", function (req, res) {
-        var criterio = {}; // AÑADIR CRITERIO USUARIO EN SESION NO INCLUIR SUS OFFERS
-
-        gestorBD.obtenerOfertas(criterio, function (ofertas) {
+        gestorBD.obtenerOfertas({}, function (ofertas) {
             if (ofertas == null) {
                 res.status(500);
                 res.json({
@@ -42,6 +37,9 @@ module.exports = function (app, gestorBD) {
                 })
             } else {
                 res.status(200);
+                ofertas = ofertas.filter(function(offer){
+                    return offer.seller.toString().localeCompare(res.usuario.toString()) != 0;
+                });
                 res.send(JSON.stringify(ofertas));
             }
         });

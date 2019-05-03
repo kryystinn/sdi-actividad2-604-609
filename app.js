@@ -34,7 +34,7 @@ routerUserToken.use(function (req, res, next) {
     if (token != null) {
         // verificamos el token
         jwt.verify(token, 'secreto', function (err, infoToken) {
-            // Si no hay o no lo desencriptamos en mas de 240 seg -> error
+            // Si no hay o no lo desencriptamos en menos de 240 seg -> error
             if (err || (Date.now() / 1000 - infoToken.tiempo) > 240) {
                 res.status(403);
                 res.json({
@@ -59,6 +59,8 @@ routerUserToken.use(function (req, res, next) {
 
 // Aplicar routerUsuarioToken
 app.use('/api/ofertas', routerUserToken);
+app.use('/api/mensaje', routerUserToken);
+app.use('/api/chat', routerUserToken);
 
 var routerAdminSession = express.Router();
 routerAdminSession.use(function (req, res, next) {
