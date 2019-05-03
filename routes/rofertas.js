@@ -86,7 +86,8 @@ module.exports = function (app, swig, gestorBD) {
                 price: req.body.precio,
                 seller: req.session.usuario.email,
                 sold: false,
-                buyer: null
+                buyer: null,
+                starred: false
             };
             // Conectarse
             gestorBD.insertarOferta(oferta, function (id) {

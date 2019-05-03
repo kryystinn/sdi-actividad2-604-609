@@ -1,0 +1,75 @@
+<div id="widget-ofertas">
+    <div class="table-responsive" style="margin-top: 30px">
+        <table class="table table-hover" id="tableUsers">
+            <thead>
+            <tr>
+                <th style="text-align: left">Título</th>
+                <th style="text-align: left">Detalles</th>
+                <th style="text-align: left">Precio</th>
+                <th></th>
+            </tr>
+            </thead>
+            <tbody id="tablaCuerpo">
+
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+    window.history.pushState("", "", "/cliente.html?w=ofertas");
+
+    var ofertas;
+    function cargarOfertas(){
+        $.ajax({
+            url: URLbase + "/ofertas",
+            type: "GET",
+            data: { },
+            dataType: 'json',
+            headers: { "token": token },
+            success: function(respuesta) {
+                ofertas = respuesta;
+                actualizarTabla(ofertas);
+            },
+            error : function (error){
+                $( "#contenedor-principal" ).load("widget-login.html");
+            }
+        });
+    }
+
+    cargarOfertas();
+
+    function actualizarTabla(ofertasMostrar){
+        $( "#tablaCuerpo" ).empty(); // Vaciar la tabla
+        for (i = 0; i < ofertasMostrar.length; i++) {
+            $( "#tablaCuerpo" ).append(
+                "<tr id="+ofertasMostrar[i]._id+">"+
+                "<td>"+ofertasMostrar[i].title+"</td>" +
+                "<td>"+ofertasMostrar[i].details+"</td>" +
+                "<td>"+ofertasMostrar[i].price+"</td>" +
+                "<td>"+
+                "<a onclick=chat('"+ofertasMostrar[i]._id+"')>Chat</a><br>"+
+                "</td>"+
+                "</tr>" );
+        }
+    }
+
+    function chat(_id) {
+        idOfertaSeleccionada = _id;
+        $( "#contenedor-principal" ).load( "widget-chat.html");
+    }
+
+    $('#filtro-nombre').on('input',function(e){
+        var ofertasFiltradas = [];
+        var nombreFiltro = $("#filtro-nombre").val();
+
+        for (i = 0; i < ofertas.length; i++) {
+            if (ofertas[i].nombre.indexOf(nombreFiltro) != -1 ){
+                ofertasFiltradas.push(ofertas[i]);
+            }
+        }
+        actualizarTabla(ofertasFiltradas);
+    });
+
+
+</script>

@@ -1,0 +1,66 @@
+<div id="widget-login">
+    <style>
+        button {
+            border-radius: 25px;
+            background-color: lavenderblush;
+            width: 150px;
+            height: 40px;
+            font-family: "Calibri";
+            font-weight: bold;
+            font-size: 16px;
+        }
+    </style>
+
+    <h1 style="text-align: center;">Identificación de usuario para acceder a los chats</h1>
+    <div class="form-group">
+        <label class="control-label col-sm-2" for="email">Email:</label>
+        <div class="col-sm-10">
+            <input type="email" class="form-control" name="email" id="email"
+                   placeholder="email@email.com" required="true"/>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label class="control-label col-sm-2" for="password">Contraseña:</label>
+        <div class="col-sm-10">
+            <input type="password" class="form-control" name="password" id="password"
+                   placeholder="contraseña" required="true"/>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <div class="col-sm-offset-2 col-sm-10" align="right">
+            <button type="button" id="button-login">Identificarse</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    window.history.pushState("", "", "/cliente.html?w=login");
+
+    $("#button-login").click(function () {
+        $.ajax({
+            url: URLbase + "/identificar",
+            type: "POST",
+            data: {
+                email: $("#email").val(),
+                password: $("#password").val()
+            },
+            dataType: 'json',
+            success: function (respuesta) {
+                console.log(respuesta.token); // <- Prueba
+                token = respuesta.token;
+                Cookies.set('token', respuesta.token);
+                $("#contenedor-principal").load("widget-ofertas.html");
+                Cookies.set('email', $("#email").val());
+                $("#loggedUser").text(Cookies.get('email'));
+            },
+            error: function (error) {
+                Cookies.remove('token');
+                $("#widget-login")
+                    .prepend("<div class='alert alert-danger'>Usuario no encontrado</div>");
+            }
+
+        });
+    });
+</script>

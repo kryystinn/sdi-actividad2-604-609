@@ -1,6 +1,6 @@
 module.exports = function (app, gestorBD) {
 
-    app.post("/api/identificar/", function (req, res) {
+    app.post("/api/identificar", function (req, res) {
         var seguro = app.get("crypto").createHmac('sha256', app.get('clave'))
             .update(req.body.password).digest('hex');
         var criterio = {
@@ -45,5 +45,18 @@ module.exports = function (app, gestorBD) {
                 res.send(JSON.stringify(ofertas));
             }
         });
+    });
+
+    app.post("/api/mensaje/:id", function (req, res) {
+        var criterio = {
+
+        };
+    });
+
+
+    app.get("/api/chat/:id", function (req, res) {
+        var criterio = {
+
+        };
     });
 };

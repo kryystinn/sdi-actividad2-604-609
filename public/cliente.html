@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<link rel="icon" href="img/logo.png">
+<head>
+    <title>MyWallapop</title>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"/>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.0/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="/js/cookie.js"></script>
+</head>
+<body>
+
+
+<!-- Barra de Navegación superior -->
+<nav class="navbar navbar-inverse">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <img src="/img/logo.png" alt="logo" width="40" height="40"/>
+        </div>
+        <div class="collapse navbar-collapse" id="myNavbar">
+            <ul class="nav navbar-nav">
+
+                <li id="mInicio"><a href="/tienda">Inicio</a></li>
+
+                <li id="offers-menu" class="dropdown">
+                    <a id="btnOffersManagement" class="dropdown-toggle" data-toggle="dropdown" href="#">
+                        <span>Gestionar ofertas</span>
+                        <span class="caret"></span>
+                    </a>
+                    <ul id="offersDropdownMenu" class="dropdown-menu">
+                        <li><a id="addOffer" href="/ofertas/agregar">Añadir oferta</a></li>
+                        <li><a id="offersList" href="/ofertas/propias">Ver mis ofertas</a></li>
+                    </ul>
+                </li>
+
+                <li id="mCompras"><a href="/ofertas/compras">Mis compras</a></li>
+                <li id="chat"><a href="/cliente.html?w=ofertas">Chats</a></li>
+
+            </ul>
+
+            <ul class="nav navbar-nav navbar-right">
+
+                <li class="dropdown">
+                    <a id="btnGroup"
+                       class="dropdown-toggle" data-toggle="dropdown" role="button"
+                       aria-haspopup="true" aria-expanded="false" style="color: white;">
+                        <span id="loggedUser"></span>
+                        <span class="caret"></span>
+                    </a>
+
+                    <ul id="usersdropdownMenuButton" class="dropdown-menu">
+
+                        <li style="text-align:center">
+                            <span style="font-size: 20pt; color: darkred; font-weight: bold" id="loggedUserMoney">€</span>
+                        </li>
+
+                        <li><a href="/desconectarse"><span class="glyphicon glyphicon-log-out"></span> Desconectarse</a>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+
+<div class="container">
+
+    <style>
+        h1 {
+            font-family: "Calibri Light";
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+
+        label {
+            font-family: "Calibri Light";
+            font-size: 16px;
+            color: #000000;
+        }
+    </style>
+
+    <!-- Contenido -->
+    <div class="container" id="contenedor-principal"> <!--  id para identificar -->
+
+    </div>
+
+
+    <!-- Contenido -->
+    <script>
+        var token;
+        var URLbase = "http://localhost:8081/api";
+        $("#contenedor-principal").load("widget-login.html");
+
+        if (Cookies.get('token') != null) {
+            token = Cookies.get('token');
+
+
+            var url = new URL(window.location.href);
+            var w = url.searchParams.get("w");
+            if (w == "login") {
+                $("#contenedor-principal").load("widget-login.html");
+            }
+            if (w == "ofertas") {
+                $("#contenedor-principal").load("widget-ofertas.html");
+            }
+
+        }
+
+
+
+
+        var mensaje = getUrlParameter('mensaje');
+        var tipoMensaje = getUrlParameter('tipoMensaje');
+        if (mensaje != "") {
+            if (tipoMensaje == "") {
+                tipoMensaje = 'alert-info';
+            }
+            $(".container")
+                .append("<div class='alert " + tipoMensaje + "'> " + mensaje + "</div>");
+        }
+
+        function getUrlParameter(name) {
+            name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
+            var regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
+            var results = regex.exec(location.search);
+            return results === null ? '' :
+                decodeURIComponent(results[1].replace(/\+/g, ' '));
+        }
+    </script>
+
+</div>
+
+
+</body>
+</html>
