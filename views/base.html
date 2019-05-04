@@ -26,6 +26,10 @@
         </div>
         <div class="collapse navbar-collapse" id="myNavbar">
             <ul class="nav navbar-nav">
+                {% if user == null %}
+                <li id="mInicio"><a href="/identificarse">Tienda</a></li>
+                <li id="chat"><a href="/cliente.html">Chat</a></li>
+                {% endif %}
                 {% if user && role != 'admin' %}
                     <li id="mInicio"><a href="/tienda">Inicio</a></li>
 
@@ -41,14 +45,12 @@
                     </li>
 
                     <li id="mCompras"><a href="/ofertas/compras">Mis compras</a></li>
-                    <li id="chat"><a href="/cliente.html">Chats</a></li>
                 {% endif %}
             </ul>
 
             <ul class="nav navbar-nav navbar-right">
                 {% if user == null %}
                     <li><a href="/registrarse"><span class="glyphicon glyphicon-user"></span> Regístrate</a></li>
-                    <li><a href="/identificarse"><span class="glyphicon glyphicon-log-in"></span> Identifícate</a></li>
                 {% endif %}
 
                 {% if user %}

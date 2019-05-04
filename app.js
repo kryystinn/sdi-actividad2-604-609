@@ -99,7 +99,7 @@ require("./routes/rofertas.js")(app, swig, gestorBD);
 require("./routes/rapimywallapop.js")(app, gestorBD);
 
 app.get('/', function (req, res) {
-    res.redirect('/identificarse');
+    res.redirect('/index');
 });
 
 // funcion basica de manejo de errores

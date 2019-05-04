@@ -53,6 +53,11 @@
                 $("#contenedor-principal").load("widget-ofertas.html");
                 Cookies.set('email', $("#email").val());
                 $("#loggedUser").text(Cookies.get('email'));
+                Cookies.set('balance', respuesta.balance);
+                $("#loggedUserMoney").text(Cookies.get('balance') + "€");
+                $("#user-info").show();
+                $("#accessItems").hide();
+
             },
             error: function (error) {
                 Cookies.remove('token');

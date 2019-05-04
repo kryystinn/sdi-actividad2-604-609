@@ -7,6 +7,11 @@ module.exports = function (app, swig, gestorBD) {
         return swig.renderFile(route, params);
     }
 
+    //  Página principal
+    app.get('/index', function (req,res) {
+        res.send(swig.renderFile('views/index.html', {}));
+    });
+
 
     // Registrarse
     app.get('/registrarse', function (req, res) {
@@ -158,6 +163,6 @@ module.exports = function (app, swig, gestorBD) {
 
     app.get('/desconectarse', function (req, res) {
         req.session.usuario = null;
-        res.redirect("/identificarse");
+        res.redirect("/index");
     });
 };

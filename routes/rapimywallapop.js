@@ -19,10 +19,12 @@ module.exports = function (app, gestorBD) {
                         usuario: criterio.email,
                         tiempo: Date.now() / 1000
                     }, "secreto");
+                let userBalance = usuarios[0].balance;
                 res.status(200);
                 res.json({
                     autenticado: true,
-                    token : token
+                    token : token,
+                    balance: userBalance
                 })
             }
         });
@@ -67,8 +69,8 @@ module.exports = function (app, gestorBD) {
             else if (chats.length == 0) {
                 // Si el chat no existe (coleccion vacia), ES EL PRIMER MENSAJE, LUEGO CREAMOS EL CHAT
                 let chat = {
-                    idOferta: ,         // puede haber varias conversaciones entre dos usuarios por distintos productos
-                    seller: ,           // idOferta es el id de la oferta por la que conversan
+                  //  idOferta: ,         // puede haber varias conversaciones entre dos usuarios por distintos productos
+                  //  seller: ,           // idOferta es el id de la oferta por la que conversan
                     author: res.usuario,
                     messages: [ {mensaje} ]
                 };
