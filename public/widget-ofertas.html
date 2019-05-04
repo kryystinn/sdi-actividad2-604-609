@@ -29,7 +29,7 @@
             dataType: 'json',
             headers: { "token": token },
             success: function(respuesta) {
-                ofertas = respuesta;
+                ofertas = respuesta.filter(o => !o.sold);
                 actualizarTabla(ofertas);
             },
             error : function (error){

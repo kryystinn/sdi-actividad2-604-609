@@ -166,17 +166,17 @@ module.exports = {
 
     // ---------------------------------OPERACIONES CHAT---------------------------------
 
-    crearChat : function(chat, funcionCallback) {
+   enviarMensaje : function(mensaje, funcionCallback) {
         this.mongo.MongoClient.connect(this.app.get('db'), function(err, db) {
             if (err) {
                 funcionCallback(null);
             } else {
-                var collection = db.collection('chats');
-                collection.insert(chat, function(err, result) {
+                var collection = db.collection('mensajes');
+                collection.insert(mensaje, function(err, result) {
                     if (err) {
                         funcionCallback(null);
                     } else {
-                        funcionCallback(result.ops[0]._id);
+                        funcionCallback(result.ops[0]);
                     }
                     db.close();
                 });
@@ -200,28 +200,28 @@ module.exports = {
             }
         });
     },
-    obtenerChats : function(criterio, funcionCallback) {
+    obtenerMensajes : function(criterio, funcionCallback) {
         this.mongo.MongoClient.connect(this.app.get('db'), function (err, db) {
             if (err)
                 funcionCallback(null);
             else {
-                var collection = db.collection('chats');
-                collection.find(criterio).toArray(function (err, chats) {
+                var collection = db.collection('mensajes');
+                collection.find(criterio).toArray(function (err, mensajes) {
                     if (err)
                         funcionCallback(null);
                     else
-                        funcionCallback(chats);
+                        funcionCallback(mensajes);
                     db.close();
                 });
             }
         });
     },
-    eliminarChats : function(criterio, funcionCallback) {
+    eliminarMensajes : function(criterio, funcionCallback) {
         this.mongo.MongoClient.connect(this.app.get('db'), function (err, db) {
             if (err) {
                 funcionCallback(null);
             } else {
-                var collection = db.collection('chats');
+                var collection = db.collection('mensajes');
                 collection.remove(criterio, function (err, result) {
                     if (err) {
                         funcionCallback(null);

@@ -41,8 +41,8 @@
                             <td style="text-align: center"> {{ oferta.price }}</td>
                             {% if !oferta.sold %}
                                 <td style="text-align: center">
-                                    <form action="/ofertas/comprar/{{oferta._id.toString()}}">
-                                        <button type="button" class="btn btn-info">Comprar</button>
+                                    <form action="/ofertas/comprar/{{ oferta._id.toString() }}">
+                                        <button type="submit" class="btn btn-info">Comprar</button>
                                     </form>
                                 </td>
                             {% else %}

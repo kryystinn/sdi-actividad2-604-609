@@ -46,7 +46,7 @@
                                   id="loggedUserMoney"></span>
                         </li>
 
-                        <li><a href="/desconectarse"><span class="glyphicon glyphicon-log-out"></span> Desconectarse</a>
+                        <li><button id="desconectar"><span class="glyphicon glyphicon-log-out"></span> Desconectarse</button>
                         </li>
                     </ul>
                 </li>
@@ -121,6 +121,12 @@
             return results === null ? '' :
                 decodeURIComponent(results[1].replace(/\+/g, ' '));
         }
+
+        $("#desconectar").click(function (evt) {
+            Cookies.remove('token');
+            $("#accessItems").show();
+            $("#contenedor-principal").load("widget-login.html");
+        });
     </script>
 
 </div>
