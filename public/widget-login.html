@@ -48,7 +48,6 @@
             },
             dataType: 'json',
             success: function (respuesta) {
-                console.log(respuesta.token); // <- Prueba
                 token = respuesta.token;
                 Cookies.set('token', respuesta.token);
                 $("#contenedor-principal").load("widget-ofertas.html");

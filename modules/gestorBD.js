@@ -164,4 +164,74 @@ module.exports = {
         });
     },
 
+    // ---------------------------------OPERACIONES CHAT---------------------------------
+
+    crearChat : function(chat, funcionCallback) {
+        this.mongo.MongoClient.connect(this.app.get('db'), function(err, db) {
+            if (err) {
+                funcionCallback(null);
+            } else {
+                var collection = db.collection('chats');
+                collection.insert(chat, function(err, result) {
+                    if (err) {
+                        funcionCallback(null);
+                    } else {
+                        funcionCallback(result.ops[0]._id);
+                    }
+                    db.close();
+                });
+            }
+        });
+    },
+    modificarChats : function(criterio, chat, funcionCallback) {
+        this.mongo.MongoClient.connect(this.app.get('db'), function(err, db) {
+            if (err) {
+                funcionCallback(null);
+            } else {
+                var collection = db.collection('chats');
+                collection.update(criterio, {$set: chat}, function(err, result) {
+                    if (err) {
+                        funcionCallback(null);
+                    } else {
+                        funcionCallback(result);
+                    }
+                    db.close();
+                });
+            }
+        });
+    },
+    obtenerChats : function(criterio, funcionCallback) {
+        this.mongo.MongoClient.connect(this.app.get('db'), function (err, db) {
+            if (err)
+                funcionCallback(null);
+            else {
+                var collection = db.collection('chats');
+                collection.find(criterio).toArray(function (err, chats) {
+                    if (err)
+                        funcionCallback(null);
+                    else
+                        funcionCallback(chats);
+                    db.close();
+                });
+            }
+        });
+    },
+    eliminarChats : function(criterio, funcionCallback) {
+        this.mongo.MongoClient.connect(this.app.get('db'), function (err, db) {
+            if (err) {
+                funcionCallback(null);
+            } else {
+                var collection = db.collection('chats');
+                collection.remove(criterio, function (err, result) {
+                    if (err) {
+                        funcionCallback(null);
+                    } else {
+                        funcionCallback(result);
+                    }
+                    db.close();
+                });
+            }
+        });
+    }
+
 };

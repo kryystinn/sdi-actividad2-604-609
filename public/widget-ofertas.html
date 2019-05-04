@@ -6,6 +6,7 @@
                 <th style="text-align: left">Título</th>
                 <th style="text-align: left">Detalles</th>
                 <th style="text-align: left">Precio</th>
+                <th style="text-align: left">Vendedor</th>
                 <th></th>
             </tr>
             </thead>
@@ -46,8 +47,9 @@
                 "<td>"+ofertasMostrar[i].title+"</td>" +
                 "<td>"+ofertasMostrar[i].details+"</td>" +
                 "<td>"+ofertasMostrar[i].price+"</td>" +
+                "<td>"+ofertasMostrar[i].seller+"</td>"   +
                 "<td>"+
-                "<a onclick=chat('"+ofertasMostrar[i]._id+"')>Chat</a><br>"+
+                    "<a onclick=chat('"+ofertasMostrar[i]._id+"')>Iniciar Chat</a><br>"+
                 "</td>"+
                 "</tr>" );
         }
@@ -55,7 +57,7 @@
 
     function chat(_id) {
         idOfertaSeleccionada = _id;
-        $( "#contenedor-principal" ).load( "widget-chat.html");
+        $( "#contenedor-principal" ).load("widget-chat.html");
     }
 
     $('#filtro-nombre').on('input',function(e){

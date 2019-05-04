@@ -22,7 +22,6 @@ module.exports = function (app, swig, gestorBD) {
         gestorBD.obtenerUsuarios(criterio, function (usuarios) {
             // Si no hay ningún email igual al introducido en la BD:
             if (usuarios == null || usuarios.length == 0) {
-
                 let pass = app.get("crypto").createHmac('sha256', app.get('clave'))
                     .update(req.body.password).digest('hex');
                 let passConf = app.get("crypto").createHmac('sha256', app.get('clave'))
