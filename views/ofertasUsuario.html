@@ -14,6 +14,7 @@
                 <th style="text-align: center">Detalles</th>
                 <th style="text-align: center">Precio</th>
                 <th></th>
+                <th></th>
             </tr>
             </thead>
             {% for oferta in ofertas %}
@@ -24,7 +25,9 @@
                     <td style="text-align: center"> {{ oferta.price }}</td>
                     <td style="text-align: center"><a href="/ofertas/eliminar/{{ oferta._id.toString() }}">Eliminar</a></td>
                     {% if oferta.starred == false %}
-                    <td style="text-align: center"><a href="/ofertas/destacar/{{ oferta._id.toString() }}">Hacer destacada</a></td>
+                        <td style="text-align: center"><a href="/ofertas/destacar/{{ oferta._id.toString() }}">Hacer destacada</a></td>
+                    {% else %}
+                        <td style="text-align: center; color: red; font-weight: bold;">Destacada</td>
                     {% endif %}
                 </tr>
             </div>

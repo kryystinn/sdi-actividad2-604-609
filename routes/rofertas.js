@@ -54,6 +54,20 @@ module.exports = function (app, swig, gestorBD) {
         });
     });
 
+    //ofertas destacadas
+    app.get('/ofertas/destacadas', function(req, res){
+        var criterio = { starred: true };
+        gestorBD.obtenerOfertas(criterio, function (ofertas) {
+            if (ofertas == null)
+                res.send("Error al listar");
+            else {
+                var params = [];
+                params['ofertas'] = ofertas;
+                res.send(globalRender('views/ofertasDestacadas.html', params, req.session));
+            }
+        });
+    });
+
     // Dar de baja una oferta.
     app.get('/ofertas/eliminar/:id', function (req, res) {
         var criterio = {"_id": gestorBD.mongo.ObjectID(req.params.id)};

@@ -2,48 +2,6 @@
 {% block titulo %} MyWallapop {% endblock %}
 {% block contenido_principal %}
 
-
-<div>
-<h1 style="text-align: left;">OFERTAS DESTACADAS</h1>
-    {% if ofertas.length == 0 %}
-    <p style="margin-top: 25px;">No hay ofertas destacadas.</p>
-    {% else %}
-    <div class="table-responsive" style="margin-top: 30px">
-        <table class="table table-hover" id="tablestarred">
-            <thead>
-            <tr>
-                <th style="text-align: center">Título</th>
-                <th style="text-align: center">Detalles</th>
-                <th style="text-align: center">Precio</th>
-                <th></th>
-            </tr>
-            </thead>
-            {% for oferta in ofertas %}
-                {% if oferta.seller != user.email && oferta.starred == true %}
-                    <div class="col-xs-6 col-sm-6 col-md-4 col-lg-3">
-                        <tr>
-                            <td style="text-align: center"> {{ oferta.title }}</td>
-                            <td style="text-align: center"> {{ oferta.details }}</td>
-                            <td style="text-align: center"> {{ oferta.price }}</td>
-                            {% if !oferta.sold %}
-                                <td style="text-align: center">
-                                    <form action="/ofertas/comprar/{{ oferta._id.toString() }}">
-                                        <button type="submit" class="btn btn-info">Comprar</button>
-                                    </form>
-                                </td>
-                            {% else %}
-                                <td style="text-align: center">
-                                    <button type="button" class="btn btn-success" disabled>Vendido</button>
-                                </td>
-                            {% endif %}
-                        </tr>
-                    </div>
-                {% endif %}
-            {% endfor %}
-        </table>
-    </div>
-</div>
-
 <h1 style="text-align: left;">Ofertas Disponibles</h1>
 <p style="margin-top: 25px;">
     <div id="custom-search-input ">
@@ -98,7 +56,7 @@
             {% endfor %}
         </table>
     </div>
-<!-- Paginación mostrar la actual y 2 anteriores y dos siguientes -->
+<!-- Paginación mostrar la actual y 2 anteriores y 2 siguientes -->
 <div class="row text-center">
     <ul class="pagination">
         {% for pagina in paginas %}

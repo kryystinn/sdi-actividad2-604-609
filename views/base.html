@@ -27,7 +27,7 @@
         <div class="collapse navbar-collapse" id="myNavbar">
             <ul class="nav navbar-nav">
                 {% if user == null %}
-                <li id="mInicio"><a href="/identificarse">Tienda</a></li>
+                <li id="tienda"><a href="/identificarse">Tienda</a></li>
                 <li id="chat"><a href="/cliente.html">Chat</a></li>
                 {% endif %}
                 {% if user && role != 'admin' %}
@@ -43,14 +43,14 @@
                             <li><a id="offersList" href="/ofertas/propias">Ver mis ofertas</a></li>
                         </ul>
                     </li>
-
+                    <li id="starredOffers"><a href="/ofertas/destacadas">Destacadas</a></li>
                     <li id="mCompras"><a href="/ofertas/compras">Mis compras</a></li>
                 {% endif %}
             </ul>
 
             <ul class="nav navbar-nav navbar-right">
                 {% if user == null %}
-                    <li><a href="/registrarse"><span class="glyphicon glyphicon-user"></span> Regístrate</a></li>
+                    <li><a href="/registrarse"><span class="glyphicon glyphicon-user"></span>Regístrate</a></li>
                 {% endif %}
 
                 {% if user %}

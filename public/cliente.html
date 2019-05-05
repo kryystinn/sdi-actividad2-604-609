@@ -31,32 +31,12 @@
                 <li id="chat"><a href="/cliente.html">Chat</a></li>
             </ul>
 
-            <ul class="nav navbar-nav" id="opciones">
+            <ul id="opciones" class="nav navbar-nav">
                 <li id="ofertas"><a href="/cliente.html?w=ofertas">Inicio</a></li>
-                <!-- <li id="ofertas"><a href="/cliente.html?w=ownChats">Chats de mis ofertas</a></li> -->
             </ul>
 
-            <ul  id="user-info" class="nav navbar-nav navbar-right">
-
-                <li class="dropdown">
-                    <a id="btnGroup"
-                       class="dropdown-toggle" data-toggle="dropdown" role="button"
-                       aria-haspopup="true" aria-expanded="false" style="color: white;">
-                        <span id="loggedUser"></span>
-                        <span class="caret"></span>
-                    </a>
-
-                    <ul id="usersdropdownMenuButton" class="dropdown-menu">
-
-                        <li style="text-align:center">
-                            <span style="font-size: 20pt; color: darkred; font-weight: bold"
-                                  id="loggedUserMoney"></span>
-                        </li>
-
-                        <li><button id="desconectar"><span class="glyphicon glyphicon-log-out"></span> Desconectarse</button>
-                        </li>
-                    </ul>
-                </li>
+            <ul id="user-info" class="nav navbar-nav navbar-right">
+                <li><a id="desconectar">Desconectarse</a></li>
             </ul>
         </div>
     </div>
@@ -139,6 +119,8 @@
         $("#desconectar").click(function (evt) {
             Cookies.remove('token');
             $("#accessItems").show();
+            $("#user-info").hide();
+            $("#opciones").hide();
             $("#contenedor-principal").load("widget-login.html");
         });
     </script>
