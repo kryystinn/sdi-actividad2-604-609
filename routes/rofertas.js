@@ -102,39 +102,44 @@ module.exports = function (app, swig, gestorBD) {
 
     // Comprar una oferta
     app.get('/ofertas/comprar/:id', function (req, res) {
-        // PRIMERO: modificamos la oferta a VENDIDA y le añadimos el COMPRADOR
-        var criterio = {"_id": gestorBD.mongo.ObjectID(req.params.id)};
-        var oferta = {
-            sold: true,
-            buyer: req.session.usuario.email
+        // PRIMERO: comprobamos que el usuario tenga dinero para comprar la oferta
+        criterio = {
+            "_id": gestorBD.mongo.ObjectID(req.params.id)
         };
-        gestorBD.modificarOferta(criterio, oferta, function (result) {
+        gestorBD.obtenerOfertas(criterio, function (result) {
             if (result == null) {
-                res.send("Error al modificar la oferta");
-
-                // SEGUNDO: obtenemos el dinero de la oferta a comprar
+                res.send("Error al encontrar la oferta");
             } else {
-                gestorBD.obtenerOfertas(criterio, function (oferta) {
-                    if (result == null) {
-                        res.send("Error al modificar la oferta");
+                var precioOferta = result[0].price;
+                if (req.session.usuario.balance >= precioOferta) {
+                    // SEGUNDO: modificamos la oferta a VENDIDA y le añadimos el COMPRADOR
+                    var criterio = {"_id": gestorBD.mongo.ObjectID(req.params.id)};
+                    var oferta = {
+                        sold: true,
+                        buyer: req.session.usuario.email
+                    };
+                    gestorBD.modificarOferta(criterio, oferta, function (result) {
+                        if (result == null) {
+                            res.send("Error al modificar la oferta");
 
-                        // TERCERO: modificamos el DINERO del COMPRADOR
-                    }else {
-                        var criterio = {"_id": gestorBD.mongo.ObjectID(req.session.usuario._id)};
-                        var precioCompra = oferta[0].price;
-                        var comprador = {
-                            balance: parseInt(req.session.usuario.balance) - parseInt(precioCompra)
-                        };
-                        gestorBD.modificarUsuario(criterio, comprador, function (idUser) {
-                            if (idUser == null)
-                                res.send("Error al modificar usuario.");
-                            else {
-                                req.session.usuario.balance = comprador.balance;
-                                res.redirect("/tienda");
-                            }
-                        });
-                    }
-                });
+                            // TERCERO: modificamos el DINERO del COMPRADOR
+                        } else {
+                            var criterio = {"_id": gestorBD.mongo.ObjectID(req.session.usuario._id)};
+                            var comprador = {
+                                balance: parseInt(req.session.usuario.balance) - parseInt(precioOferta)
+                            };
+                            gestorBD.modificarUsuario(criterio, comprador, function (idUser) {
+                                if (idUser == null)
+                                    res.send("Error al modificar usuario.");
+                                else {
+                                    req.session.usuario.balance = comprador.balance;
+                                    res.redirect("/tienda");
+                                }
+                            });
+                        }
+                    });
+                } else
+                    res.redirect("/tienda?mensaje=No tienes suficiente dinero para esta oferta.&tipoMensaje=alert-danger");
             }
         });
     });

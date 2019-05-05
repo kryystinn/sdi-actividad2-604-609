@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"/>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.0/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="https://momentjs.com/downloads/moment-with-locales.min.js"></script>
     <script src="/js/cookie.js"></script>
 </head>
 <body id="content">
@@ -29,6 +30,11 @@
                 <li id="mInicio"><a href="/identificarse">Tienda</a></li>
                 <li id="chat"><a href="/cliente.html">Chat</a></li>
             </ul>
+
+            <ul class="nav navbar-nav" id="Ofertas">
+                <li id="ofertas"><a href="/cliente.html?w=ofertas">Inicio</a></li>
+            </ul>
+
             <ul  id="user-info" class="nav navbar-nav navbar-right">
 
                 <li class="dropdown">
@@ -98,8 +104,14 @@
             }
             if (w == "ofertas") {
                 $("#accessItems").hide();
+                $("#user-info").show();
                 $("#contenedor-principal").load("widget-ofertas.html");
 
+            }
+            if (w == "chat") {
+                $("#accessItems").hide();
+                $("#user-info").show();
+                $("#contenedor-principal").load("widget-chat.html");
             }
 
         }

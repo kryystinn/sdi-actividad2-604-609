@@ -49,14 +49,15 @@
                 "<td>"+ofertasMostrar[i].price+"</td>" +
                 "<td>"+ofertasMostrar[i].seller+"</td>"   +
                 "<td>"+
-                    "<a onclick=chat('"+ofertasMostrar[i]._id+"')>Iniciar Chat</a><br>"+
+                    "<a onclick=chat('"+ofertasMostrar[i]._id+"','"+ofertasMostrar[i].seller+"')>Iniciar Chat</a><br>"+
                 "</td>"+
                 "</tr>" );
         }
     }
 
-    function chat(_id) {
-        idOfertaSeleccionada = _id;
+    function chat(_id, email) {
+        Cookies.set('idOferta', _id);
+        Cookies.set('receptor', email);
         $( "#contenedor-principal" ).load("widget-chat.html");
     }
 

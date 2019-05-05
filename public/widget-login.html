@@ -38,6 +38,12 @@
 <script>
     window.history.pushState("", "", "/cliente.html?w=login");
 
+    $( document ).ready(function() {
+        $("#loggedUser").text(Cookies.get('email'));
+        $("#loggedUserMoney").text(Cookies.get('balance') + "€");
+
+    });
+
     $("#button-login").click(function () {
         $.ajax({
             url: URLbase + "/identificar",
@@ -52,9 +58,7 @@
                 Cookies.set('token', respuesta.token);
                 $("#contenedor-principal").load("widget-ofertas.html");
                 Cookies.set('email', $("#email").val());
-                $("#loggedUser").text(Cookies.get('email'));
                 Cookies.set('balance', respuesta.balance);
-                $("#loggedUserMoney").text(Cookies.get('balance') + "€");
                 $("#user-info").show();
                 $("#accessItems").hide();
 

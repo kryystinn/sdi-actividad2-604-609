@@ -85,6 +85,7 @@ module.exports = function (app, gestorBD) {
                 res.status(500);
                 res.json({error: "se ha producido un error"})
             } else {
+                mensajes.sort((m1, m2) => m1.date - m2.date);
                 res.status(200);
                 res.send(JSON.stringify(mensajes));
             }
