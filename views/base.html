@@ -27,8 +27,8 @@
         <div class="collapse navbar-collapse" id="myNavbar">
             <ul class="nav navbar-nav">
                 {% if user == null %}
-                <li id="tienda"><a href="/identificarse">Tienda</a></li>
-                <li id="chat"><a href="/cliente.html">Chat</a></li>
+                    <li id="tienda"><a href="/identificarse">Tienda</a></li>
+                    <li id="chat"><a href="/cliente.html">Chat</a></li>
                 {% endif %}
                 {% if user && role != 'admin' %}
                     <li id="mInicio"><a href="/tienda">Inicio</a></li>
@@ -50,7 +50,7 @@
 
             <ul class="nav navbar-nav navbar-right">
                 {% if user == null %}
-                    <li><a href="/registrarse"><span class="glyphicon glyphicon-user"></span>Regístrate</a></li>
+                    <li id="registro"><a href="/registrarse"><span class="glyphicon glyphicon-user"></span>Regístrate</a></li>
                 {% endif %}
 
                 {% if user %}

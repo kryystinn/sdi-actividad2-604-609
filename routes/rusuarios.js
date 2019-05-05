@@ -20,7 +20,6 @@ module.exports = function (app, swig, gestorBD) {
 
     // Añadir un nuevo usuario
     app.post('/usuario', function (req, res) {
-
         let criterio = {email: req.body.email};
 
         // Obtenemos la lista de usuarios con el mismo email
@@ -50,7 +49,9 @@ module.exports = function (app, swig, gestorBD) {
                             res.redirect("/registrarse" + "?mensaje=Error al registrar usuario" +
                                 "&tipoMensaje=alert-danger");
                         } else {
-                            res.redirect("/identificarse?mensaje=Nuevo usuario registrado");
+                            usuario._id = id;
+                            req.session.usuario = usuario;
+                            res.redirect("/tienda?mensaje=Nuevo usuario registrado");
                         }
                     });
 
@@ -163,6 +164,6 @@ module.exports = function (app, swig, gestorBD) {
 
     app.get('/desconectarse', function (req, res) {
         req.session.usuario = null;
-        res.redirect("/index");
+        res.redirect("/identificarse");
     });
 };
