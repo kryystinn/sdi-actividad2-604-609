@@ -1,14 +1,14 @@
 module.exports = function (app, swig, gestorBD) {
 
     // Función para controlar las sesiones
-    function globalRender(route, params, session){
+    function globalRender(route, params, session) {
         params['user'] = session.usuario;
         params['role'] = session.usuario.role;
         return swig.renderFile(route, params);
     }
 
     //  Página principal
-    app.get('/index', function (req,res) {
+    app.get('/index', function (req, res) {
         res.send(swig.renderFile('views/index.html', {}));
     });
 
@@ -39,8 +39,8 @@ module.exports = function (app, swig, gestorBD) {
                         surname: req.body.apellidos,
                         password: pass,
                         passwordConfirm: passConf,
-                        role : "user",
-                        balance : 100
+                        role: "user",
+                        balance: 100
                     };
 
                     // Sitodo es correcto se inserta el usuario en la BD:
@@ -70,11 +70,11 @@ module.exports = function (app, swig, gestorBD) {
         if (req.session.usuario == null) {
             res.send(swig.renderFile('views/identificacion.html', {}));
 
-        }else
+        } else
             res.redirect("/tienda");
     });
 
-        // Identificación del usuario
+    // Identificación del usuario
     app.post("/identificarse", function (req, res) {
         let pass = app.get("crypto").createHmac('sha256', app.get('clave'))
             .update(req.body.password).digest('hex');
@@ -107,23 +107,21 @@ module.exports = function (app, swig, gestorBD) {
         });
     });
 
-    app.post("/usuario/eliminar", function(req, res){
+    app.post("/usuario/eliminar", function (req, res) {
         let ids = req.body.checkboxes;
 
         if (ids != null) {
-            if ( typeof ids === 'string' ){ // 1 solo elemento seleccionado -> es un string
+            var contador = ids.length;
+            if (typeof ids === 'string') { // 1 solo elemento seleccionado -> es un string
                 let criterio = {"_id": gestorBD.mongo.ObjectID(ids)};
-                borrarUsuario(res, criterio);
-            }
-            else {
-                for (i = 0; i < ids.length; i++) {
+                borrarUsuario(res, criterio, contador, contador);
+            } else {
+                for (i = 0; i < contador; i++) {
                     var criterio = {"_id": gestorBD.mongo.ObjectID(ids[i])};
-                    borrarUsuario(res, criterio);
+                    borrarUsuario(res, criterio, i+1, contador);
                 }
             }
-            res.redirect("/usuarios?mensaje=Usuario(s) eliminado(s) correctamente");
-        }
-        else //Si pulsa el boton sin seleccionar nada se lo indicamos
+        } else //Si pulsa el boton sin seleccionar nada se lo indicamos
             res.redirect("/usuarios?mensaje=No hay ningún usuario seleccionado&tipoMensaje=alert-danger");
     });
 
@@ -132,7 +130,7 @@ module.exports = function (app, swig, gestorBD) {
      * @param res
      * @param criterio
      */
-    function borrarUsuario(res, criterio) {
+    function borrarUsuario(res, criterio, i, contador) {
         gestorBD.obtenerUsuarios(criterio, function (usuarios) {
             if (usuarios == null || usuarios.length == 0)
                 res.send("No existe el usuario");
@@ -145,12 +143,14 @@ module.exports = function (app, swig, gestorBD) {
                 gestorBD.eliminarUsuario(criterio, function (usuarios) {
                     if (usuarios == null)
                         res.send("Error al eliminar usuario(s)");
+                    else if (parseInt(i) === parseInt(contador))
+                            res.redirect("/usuarios?mensaje=Usuario(s) eliminado(s) correctamente");
                 });
             }
         });
     }
 
-    app.get('/usuarios', function(req, res) {
+    app.get('/usuarios', function (req, res) {
         gestorBD.obtenerUsuarios({}, function (usuarios) {
             if (usuarios == null)
                 res.send("Error al listar usuarios");
