@@ -79,6 +79,10 @@ module.exports = function (app, swig, gestorBD) {
         } else {
             let dt = new Date();
             let fecha = dt.toLocaleDateString();
+            if (req.body.checkboxStarred == "on")
+                var cb = true;
+            else
+                var cb = false;
             var oferta = {
                 title: req.body.titulo,
                 details: req.body.detalle,
@@ -87,13 +91,27 @@ module.exports = function (app, swig, gestorBD) {
                 seller: req.session.usuario.email,
                 sold: false,
                 buyer: null,
-                starred: false
+                starred: cb
             };
             // Conectarse
             gestorBD.insertarOferta(oferta, function (id) {
                 if (id == null) {
                     res.send("Error al insertar ");
+
                 } else {
+                    // SI la oferta es DESTACADA: descontar dinero
+                    if (cb){
+                        var criterio = {"_id": gestorBD.mongo.ObjectID(req.session.usuario._id)};
+                        var usuario = {
+                            balance: parseInt(req.session.usuario.balance - 20)
+                        };
+                        gestorBD.modificarUsuario(criterio, usuario, function (usuario) {
+                            if (usuario == null)
+                            res.send("Error al modificar usuario.");
+                        else
+                                req.session.usuario.balance = usuario.balance;
+                        });
+                    }
                     res.redirect("/ofertas/propias");
                 }
             });
@@ -110,6 +128,7 @@ module.exports = function (app, swig, gestorBD) {
             if (result == null) {
                 res.send("Error al encontrar la oferta");
             } else {
+                var vendedorEmail = result[0].seller;
                 var precioOferta = result[0].price;
                 if (req.session.usuario.balance >= precioOferta) {
                     // SEGUNDO: modificamos la oferta a VENDIDA y le añadimos el COMPRADOR
@@ -133,7 +152,30 @@ module.exports = function (app, swig, gestorBD) {
                                     res.send("Error al modificar usuario.");
                                 else {
                                     req.session.usuario.balance = comprador.balance;
-                                    res.redirect("/tienda");
+
+                                    // CUARTO: modificamos el DINERO del VENDEDOR
+                                    var criterio = {"email": vendedorEmail};
+                                    gestorBD.obtenerUsuarios(criterio, function (usuarios) {
+                                        if (usuarios == null)
+                                            res.send("Error al encontrar usuario vendedor.");
+                                        else{
+                                            var dineroVendedor = usuarios[0].balance;
+                                            var criterio = {"email": vendedorEmail};
+                                            var vendedor = {
+                                              balance: parseInt(dineroVendedor) + parseInt(precioOferta)
+                                            };
+                                            gestorBD.modificarUsuario(criterio, vendedor, function (vendedor) {
+                                                if (idUser == null)
+                                                    res.send("Error al modificar usuario vendedor.");
+                                                else {
+                                                    res.redirect("/tienda");
+                                                }
+                                            });
+                                        }
+                                    });
+
+
+
                                 }
                             });
                         }
