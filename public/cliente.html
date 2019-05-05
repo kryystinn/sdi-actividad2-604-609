@@ -31,8 +31,9 @@
                 <li id="chat"><a href="/cliente.html">Chat</a></li>
             </ul>
 
-            <ul class="nav navbar-nav" id="Ofertas">
+            <ul class="nav navbar-nav" id="opciones">
                 <li id="ofertas"><a href="/cliente.html?w=ofertas">Inicio</a></li>
+                <!-- <li id="ofertas"><a href="/cliente.html?w=ownChats">Chats de mis ofertas</a></li> -->
             </ul>
 
             <ul  id="user-info" class="nav navbar-nav navbar-right">
@@ -91,6 +92,7 @@
 
         $("#contenedor-principal").load("widget-login.html");
         $("#user-info").hide();
+        $("#opciones").hide();
         if (Cookies.get('token') != null) {
             token = Cookies.get('token');
 
@@ -99,18 +101,18 @@
             var w = url.searchParams.get("w");
             if (w == "login") {
                 $("#user-info").hide();
+                $("#opciones").hide();
                 $("#contenedor-principal").load("widget-login.html");
                 $("#content").css("background-image", 'url("/public/img/wallpaper.png)');
             }
             if (w == "ofertas") {
-                $("#accessItems").hide();
-                $("#user-info").show();
                 $("#contenedor-principal").load("widget-ofertas.html");
 
             }
             if (w == "chat") {
                 $("#accessItems").hide();
                 $("#user-info").show();
+                $("#opciones").show();
                 $("#contenedor-principal").load("widget-chat.html");
             }
 

@@ -20,6 +20,12 @@
 <script>
     window.history.pushState("", "", "/cliente.html?w=ofertas");
 
+    $( document ).ready(function() {
+        $("#accessItems").hide();
+        $("#user-info").show();
+        $("#opciones").show();
+    });
+
     var ofertas;
     function cargarOfertas(){
         $.ajax({
