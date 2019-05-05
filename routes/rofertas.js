@@ -27,9 +27,10 @@ module.exports = function (app, swig, gestorBD) {
                     ultimaPg = ultimaPg + 1;
 
                 var paginas = [];
-                for (var i = pg - 2; i <= pg + 2; i++)
+                for (var i = pg - 2; i <= pg + 2; i++){
                     if (i > 0 && i <= ultimaPg)
                         paginas.push(i);
+                }
 
                 var params = [];
                 params['ofertas'] = ofertas;
