@@ -23,7 +23,7 @@
                     <td style="text-align: center"> {{ oferta.title }}</td>
                     <td style="text-align: center"> {{ oferta.details }}</td>
                     <td style="text-align: center"> {{ oferta.price }}</td>
-                    <td style="text-align: center"><a href="/ofertas/eliminar/{{ oferta._id.toString() }}">Eliminar</a></td>
+                    <td style="text-align: center"><a id="del{{ oferta.title }}" href="/ofertas/eliminar/{{ oferta._id.toString() }}">Eliminar</a></td>
                     {% if oferta.starred == false %}
                         <td style="text-align: center"><a href="/ofertas/destacar/{{ oferta._id.toString() }}">Hacer destacada</a></td>
                     {% else %}
